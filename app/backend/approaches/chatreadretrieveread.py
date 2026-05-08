@@ -7,13 +7,14 @@ from azure.search.documents.aio import SearchClient
 from azure.search.documents.knowledgebases.aio import KnowledgeBaseRetrievalClient
 from azure.search.documents.models import VectorQuery
 from openai import AsyncOpenAI, AsyncStream
-from openai.types.chat import (
-    ChatCompletion,
-    ChatCompletionChunk,
-    ChatCompletionMessageParam,
+from openai.types.responses import (
+    EasyInputMessageParam,
+    Response,
+    ResponseCompletedEvent,
+    ResponseOutputMessage,
+    ResponseStreamEvent,
+    ResponseTextDeltaEvent,
 )
-from openai.types.chat.chat_completion import Choice
-from openai.types.chat.chat_completion_message import ChatCompletionMessage
 
 from approaches.approach import (
     Approach,
@@ -163,9 +164,7 @@ class ChatReadRetrieveReadApproach(Approach):
         self.query_language = query_language
         self.query_speller = query_speller
         self.prompt_manager = prompt_manager
-        self.query_rewrite_prompt = self.prompt_manager.load_prompt("chat_query_rewrite.prompty")
         self.query_rewrite_tools = self.prompt_manager.load_tools("chat_query_rewrite_tools.json")
-        self.answer_prompt = self.prompt_manager.load_prompt("chat_answer_question.prompty")
         self.reasoning_effort = reasoning_effort
         self.include_token_usage = True
         self.multimodal_enabled = multimodal_enabled
@@ -188,10 +187,10 @@ class ChatReadRetrieveReadApproach(Approach):
             return content, []
         return content.split("<<")[0], re.findall(r"<<([^>>]+)>>", content)
 
-    def get_search_query(self, chat_completion: ChatCompletion, default_query: str) -> str:
-        """Read the optimized search query from a chat completion tool call."""
+    def get_search_query(self, response: Response, default_query: str) -> str:
+        """Read the optimized search query from a response tool call."""
         try:
-            return self.extract_rewritten_query(chat_completion, default_query, no_response_token=self.NO_RESPONSE)
+            return self.extract_rewritten_query(response, default_query, no_response_token=self.NO_RESPONSE)
         except Exception:
             return default_query
 
@@ -244,11 +243,12 @@ class ChatReadRetrieveReadApproach(Approach):
 
     async def run_without_streaming(
         self,
-        messages: list[ChatCompletionMessageParam],
+        messages: list[EasyInputMessageParam],
         overrides: dict[str, Any],
         auth_claims: dict[str, Any],
         session_state: Any = None,
     ) -> dict[str, Any]:
+<<<<<<< HEAD
                 
         original_user_query = messages[-1]["content"]
         # previous_agent_question = ""
@@ -309,6 +309,24 @@ class ChatReadRetrieveReadApproach(Approach):
                     "thoughts": [],
                     "data_points": {},
                     "followup_questions": list(self.enabled_events),
+=======
+        extra_info, response_coroutine = await self.run_until_final_call(
+            messages, overrides, auth_claims, should_stream=False
+        )
+        response: Response = await cast(Awaitable[Response], response_coroutine)
+        content = response.output_text
+        if overrides.get("suggest_followup_questions"):
+            content, followup_questions = self.extract_followup_questions(content)
+            extra_info.followup_questions = followup_questions
+        if self.include_token_usage and extra_info.thoughts and response.usage:
+            extra_info.thoughts[-1].update_token_usage(response.usage)
+        chat_app_response = {
+            "output_text": content,
+            "context": {
+                "thoughts": extra_info.thoughts,
+                "data_points": {
+                    key: value for key, value in asdict(extra_info.data_points).items() if value is not None
+>>>>>>> 95ce0c9484b338b3819914d0c1a1fa8d19a3ff9b
                 },
                 "session_state": session_state,
             }
@@ -412,94 +430,72 @@ class ChatReadRetrieveReadApproach(Approach):
 
     async def run_with_streaming(
         self,
-        messages: list[ChatCompletionMessageParam],
+        messages: list[EasyInputMessageParam],
         overrides: dict[str, Any],
         auth_claims: dict[str, Any],
         session_state: Any = None,
     ) -> AsyncGenerator[dict, None]:
+<<<<<<< HEAD
         
         extra_info, chat_coroutine = await self.run_until_final_call(
+=======
+        extra_info, response_coroutine = await self.run_until_final_call(
+>>>>>>> 95ce0c9484b338b3819914d0c1a1fa8d19a3ff9b
             messages, overrides, auth_claims, should_stream=True
         )
-        yield {"delta": {"role": "assistant"}, "context": extra_info, "session_state": session_state}
+        yield {"type": "response.context", "context": extra_info, "session_state": session_state}
 
         followup_questions_started = False
         followup_content = ""
-        chat_result = await chat_coroutine
+        result = await response_coroutine
 
-        if isinstance(chat_result, ChatCompletion):
-            message = chat_result.choices[0].message
-            content = message.content or ""
-            role = message.role or "assistant"
+        # Handle non-streaming Response (e.g. when agentic retrieval already provided an answer)
+        if isinstance(result, Response):
+            content = result.output_text or ""
 
             followup_questions: list[str] = []
             if overrides.get("suggest_followup_questions"):
                 content, followup_questions = self.extract_followup_questions(content)
                 extra_info.followup_questions = followup_questions
 
-            if self.include_token_usage and extra_info.thoughts and chat_result.usage:
-                extra_info.thoughts[-1].update_token_usage(chat_result.usage)
+            if self.include_token_usage and extra_info.thoughts and result.usage:
+                extra_info.thoughts[-1].update_token_usage(result.usage)
 
-            delta_payload: dict[str, Any] = {"role": role}
             if content:
-                delta_payload["content"] = content
-            yield {"delta": delta_payload}
+                yield {"type": "response.output_text.delta", "delta": content}
 
-            yield {"delta": {"role": "assistant"}, "context": extra_info, "session_state": session_state}
-
-            if followup_questions:
-                yield {
-                    "delta": {"role": "assistant"},
-                    "context": {"context": extra_info, "followup_questions": followup_questions},
-                }
+            yield {"type": "response.context", "context": extra_info, "session_state": session_state}
             return
 
-        chat_result = cast(AsyncStream[ChatCompletionChunk], chat_result)
+        # Handle streaming Response events
+        stream = cast(AsyncStream[ResponseStreamEvent], result)
 
-        async for event_chunk in chat_result:
-            # "2023-07-01-preview" API version has a bug where first response has empty choices
-            event = event_chunk.model_dump()  # Convert pydantic model to dict
-            if event["choices"]:
-                # No usage during streaming
-                completion = {
-                    "delta": {
-                        "content": event["choices"][0]["delta"].get("content"),
-                        "role": event["choices"][0]["delta"]["role"],
-                    }
-                }
-                # if event contains << and not >>, it is start of follow-up question, truncate
-                delta_content_raw = completion["delta"].get("content")
-                delta_content: str = (
-                    delta_content_raw or ""
-                )  # content may either not exist in delta, or explicitly be None
+        async for event in stream:
+            if isinstance(event, ResponseTextDeltaEvent):
+                delta_content: str = event.delta or ""
                 if overrides.get("suggest_followup_questions") and "<<" in delta_content:
                     followup_questions_started = True
                     earlier_content = delta_content[: delta_content.index("<<")]
                     if earlier_content:
-                        completion["delta"]["content"] = earlier_content
-                        yield completion
+                        yield {"type": "response.output_text.delta", "delta": earlier_content}
                     followup_content += delta_content[delta_content.index("<<") :]
                 elif followup_questions_started:
                     followup_content += delta_content
                 else:
-                    yield completion
-            else:
-                # Final chunk at end of streaming should contain usage
-                # https://cookbook.openai.com/examples/how_to_stream_completions#4-how-to-get-token-usage-data-for-streamed-chat-completion-response
-                if event_chunk.usage and extra_info.thoughts and self.include_token_usage:
-                    extra_info.thoughts[-1].update_token_usage(event_chunk.usage)
-                    yield {"delta": {"role": "assistant"}, "context": extra_info, "session_state": session_state}
+                    yield {"type": "response.output_text.delta", "delta": delta_content}
+            elif isinstance(event, ResponseCompletedEvent):
+                if event.response.usage and extra_info.thoughts and self.include_token_usage:
+                    extra_info.thoughts[-1].update_token_usage(event.response.usage)
+                    yield {"type": "response.context", "context": extra_info, "session_state": session_state}
 
         if followup_content:
             _, followup_questions = self.extract_followup_questions(followup_content)
-            yield {
-                "delta": {"role": "assistant"},
-                "context": {"context": extra_info, "followup_questions": followup_questions},
-            }
+            extra_info.followup_questions = followup_questions
+            yield {"type": "response.context", "context": extra_info, "session_state": session_state}
 
     async def run(
         self,
-        messages: list[ChatCompletionMessageParam],
+        messages: list[EasyInputMessageParam],
         session_state: Any = None,
         context: dict[str, Any] = {},
     ) -> dict[str, Any]:
@@ -509,7 +505,7 @@ class ChatReadRetrieveReadApproach(Approach):
 
     async def run_stream(
         self,
-        messages: list[ChatCompletionMessageParam],
+        messages: list[EasyInputMessageParam],
         session_state: Any = None,
         context: dict[str, Any] = {},
     ) -> AsyncGenerator[dict[str, Any], None]:
@@ -519,19 +515,14 @@ class ChatReadRetrieveReadApproach(Approach):
 
     async def run_until_final_call(
         self,
-        messages: list[ChatCompletionMessageParam],
+        messages: list[EasyInputMessageParam],
         overrides: dict[str, Any],
         auth_claims: dict[str, Any],
         should_stream: bool = False,
-    ) -> tuple[ExtraInfo, Awaitable[ChatCompletion] | Awaitable[AsyncStream[ChatCompletionChunk]]]:
+    ) -> tuple[ExtraInfo, Awaitable[Response] | Awaitable[AsyncStream[ResponseStreamEvent]]]:
         use_agentic_knowledgebase = True if overrides.get("use_agentic_knowledgebase") else False
         original_user_query = messages[-1]["content"]
 
-        reasoning_model_support = self.GPT_REASONING_MODELS.get(self.chatgpt_model)
-        if reasoning_model_support and (not reasoning_model_support.streaming and should_stream):
-            raise Exception(
-                f"{self.chatgpt_model} does not support streaming. Please use a different model or disable streaming."
-            )
         if use_agentic_knowledgebase:
             if should_stream and overrides.get("use_web_source"):
                 raise Exception(
@@ -543,47 +534,54 @@ class ChatReadRetrieveReadApproach(Approach):
 
         if extra_info.answer:
             # If agentic retrieval already provided an answer, skip final call to LLM
-            async def return_answer() -> ChatCompletion:
-                return ChatCompletion(
+            async def return_answer() -> Response:
+                return Response(
                     id="no-final-call",
-                    object="chat.completion",
-                    created=0,
+                    object="response",
+                    parallel_tool_calls=True,
+                    tool_choice="auto",
+                    tools=[],
+                    created_at=0,
                     model=self.chatgpt_model,
-                    choices=[
-                        Choice(
-                            message=ChatCompletionMessage(
-                                role="assistant",
-                                content=extra_info.answer,
-                            ),
-                            finish_reason="stop",
-                            index=0,
+                    output=[
+                        ResponseOutputMessage(
+                            id="msg-no-final-call",
+                            type="message",
+                            role="assistant",
+                            status="completed",
+                            content=[{"type": "output_text", "text": extra_info.answer, "annotations": []}],  # type: ignore[list-item]
                         )
                     ],
+                    status="completed",
                 )
 
             return (extra_info, return_answer())
 
-        messages = self.prompt_manager.render_prompt(
-            self.answer_prompt,
-            self.get_system_prompt_variables(overrides.get("prompt_template"))
+        messages = self.prompt_manager.build_conversation(
+            system_template_path="chat_answer.system.jinja2",
+            system_template_variables=self.get_system_prompt_variables(overrides.get("prompt_template"))
             | {
                 "include_follow_up_questions": bool(overrides.get("suggest_followup_questions")),
-                "past_messages": messages[:-1],
-                "user_query": original_user_query,
-                "text_sources": extra_info.data_points.text,
                 "image_sources": extra_info.data_points.images,
                 "citations": extra_info.data_points.citations,
             },
+            user_template_path="chat_answer.user.jinja2",
+            user_template_variables={
+                "user_query": original_user_query,
+                "text_sources": extra_info.data_points.text,
+            },
+            user_image_sources=extra_info.data_points.images,
+            past_messages=messages[:-1],
         )
 
-        chat_coroutine = cast(
-            Awaitable[ChatCompletion] | Awaitable[AsyncStream[ChatCompletionChunk]],
-            self.create_chat_completion(
+        response_coroutine = cast(
+            Awaitable[Response] | Awaitable[AsyncStream[ResponseStreamEvent]],
+            self.create_response(
                 self.chatgpt_deployment,
                 self.chatgpt_model,
                 messages,
                 overrides,
-                self.get_response_token_limit(self.chatgpt_model, 1024),
+                self.get_response_token_limit(self.chatgpt_model, self.RESPONSE_DEFAULT_TOKEN_LIMIT),
                 should_stream,
             ),
         )
@@ -597,10 +595,10 @@ class ChatReadRetrieveReadApproach(Approach):
                 usage=None,
             )
         )
-        return (extra_info, chat_coroutine)
+        return (extra_info, response_coroutine)
 
     async def run_search_approach(
-        self, messages: list[ChatCompletionMessageParam], overrides: dict[str, Any], auth_claims: dict[str, Any]
+        self, messages: list[EasyInputMessageParam], overrides: dict[str, Any], auth_claims: dict[str, Any]
     ):
         use_text_search = overrides.get("retrieval_mode") in ["text", "hybrid", None]
         use_vector_search = overrides.get("retrieval_mode") in ["vectors", "hybrid", None]
@@ -626,8 +624,11 @@ class ChatReadRetrieveReadApproach(Approach):
         # STEP 1: Generate an optimized keyword search query based on the chat history and the last question
 
         rewrite_result = await self.rewrite_query(
-            prompt_template=self.query_rewrite_prompt,
-            prompt_variables={"user_query": original_user_query, "past_messages": messages[:-1]},
+            prompt_template="query_rewrite.system.jinja2",
+            prompt_variables={
+                "user_query": original_user_query,
+                "past_messages": messages[:-1],
+            },
             overrides=overrides,
             chatgpt_model=self.chatgpt_model,
             chatgpt_deployment=self.chatgpt_deployment,
@@ -711,7 +712,7 @@ class ChatReadRetrieveReadApproach(Approach):
 
     async def run_agentic_retrieval_approach(
         self,
-        messages: list[ChatCompletionMessageParam],
+        messages: list[EasyInputMessageParam],
         overrides: dict[str, Any],
         auth_claims: dict[str, Any],
     ):

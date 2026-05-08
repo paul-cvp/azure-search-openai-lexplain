@@ -98,7 +98,6 @@ jobs:
       AZURE_CLIENT_APP_ID: ${{ vars.AZURE_CLIENT_APP_ID }}
       ALLOWED_ORIGIN: ${{ vars.ALLOWED_ORIGIN }}
       AZURE_ADLS_GEN2_STORAGE_ACCOUNT: ${{ vars.AZURE_ADLS_GEN2_STORAGE_ACCOUNT }}
-      AZURE_ADLS_GEN2_FILESYSTEM_PATH: ${{ vars.AZURE_ADLS_GEN2_FILESYSTEM_PATH }}
       AZURE_ADLS_GEN2_FILESYSTEM: ${{ vars.AZURE_ADLS_GEN2_FILESYSTEM }}
       DEPLOYMENT_TARGET: ${{ vars.DEPLOYMENT_TARGET }}
       AZURE_CONTAINER_APPS_WORKLOAD_PROFILE: ${{ vars.AZURE_CONTAINER_APPS_WORKLOAD_PROFILE }}
@@ -108,7 +107,7 @@ jobs:
     steps:
 
       - name: Comment on pull request
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             github.rest.issues.createComment({
@@ -140,14 +139,14 @@ jobs:
         uses: Azure/setup-azd@v2.2.1
 
       - name: Login to Azure with az CLI
-        uses: azure/login@v2
+        uses: azure/login@v3
         with:
           client-id: ${{ env.AZURE_CLIENT_ID }}
           tenant-id: ${{ env.AZURE_TENANT_ID }}
           subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
 
       - name: Set az account
-        uses: azure/CLI@v2
+        uses: azure/CLI@v3
         with:
           inlineScript: |
             az account set --subscription ${{env.AZURE_SUBSCRIPTION_ID}}
@@ -192,19 +191,19 @@ jobs:
 
       - name: Upload eval results as build artifact
         if: ${{ success() }}
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
             name: eval_result
             path: ./evals/results/pr${{ github.event.issue.number }}
 
       - name: Upload server logs as build artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: server_logs
           path: ./app/backend/serverlogs.out
 
       - name: Upload server error logs as build artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: server_error_logs
           path: ./app/backend/serverlogs.err
@@ -220,7 +219,7 @@ jobs:
           cat run-diff.md >> $GITHUB_STEP_SUMMARY
 
       - name: Comment on pull request
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const fs = require('fs');

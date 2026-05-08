@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client";
 import { createHashRouter, RouterProvider } from "react-router-dom";
 import { I18nextProvider } from "react-i18next";
 import { HelmetProvider } from "react-helmet-async";
-import { initializeIcons } from "@fluentui/react";
 import { MsalProvider } from "@azure/msal-react";
 import { AuthenticationResult, EventType, PublicClientApplication } from "@azure/msal-browser";
 
@@ -14,11 +13,14 @@ import LayoutWrapper from "./layoutWrapper";
 import i18next from "./i18n/config";
 import { msalConfig, useLogin } from "./authConfig";
 
+<<<<<<< HEAD:app/frontend/app/src/index.tsx
 // import App from "./App.tsx";
 // import { ToastContainer } from "react-toastify";
 
 initializeIcons();
 
+=======
+>>>>>>> 95ce0c9484b338b3819914d0c1a1fa8d19a3ff9b:app/frontend/src/index.tsx
 const router = createHashRouter([
     {
         path: "/",
@@ -29,6 +31,7 @@ const router = createHashRouter([
                 element: <Chat />
             },
             {
+<<<<<<< HEAD:app/frontend/app/src/index.tsx
                 path: "qa",
                 lazy: () => import("./pages/ask/Ask")
             },
@@ -46,6 +49,8 @@ const router = createHashRouter([
             //     )
             // },
             {
+=======
+>>>>>>> 95ce0c9484b338b3819914d0c1a1fa8d19a3ff9b:app/frontend/src/index.tsx
                 path: "*",
                 lazy: () => import("./pages/NoPage")
             }

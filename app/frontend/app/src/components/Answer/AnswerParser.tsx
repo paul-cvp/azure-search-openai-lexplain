@@ -32,11 +32,15 @@ type HtmlParsedAnswer = {
 const isWebCitation = (reference: string) => reference.startsWith("http://") || reference.startsWith("https://");
 
 const normalizeAnswerText = (answer: ChatAppResponse, isStreaming: boolean): string => {
+<<<<<<< HEAD:app/frontend/app/src/components/Answer/AnswerParser.tsx
     let content = answer.message.content;
     if (typeof content !== "string") {
         content = String(content ?? "");
     }
     let parsedAnswer = content.trim();
+=======
+    let parsedAnswer = answer.output_text.trim();
+>>>>>>> 95ce0c9484b338b3819914d0c1a1fa8d19a3ff9b:app/frontend/src/components/Answer/AnswerParser.tsx
 
     if (isStreaming) {
         let lastIndex = parsedAnswer.length;

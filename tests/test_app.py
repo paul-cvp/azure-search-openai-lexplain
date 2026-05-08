@@ -21,10 +21,9 @@ filtered_response = BadRequestError(
     message="The response was filtered",
     body={
         "message": "The response was filtered",
-        "type": None,
+        "type": "invalid_request_error",
         "param": "prompt",
         "code": "content_filter",
-        "status": 400,
     },
     response=Response(
         400, request=Request(method="get", url="https://foo.bar/"), json={"error": {"code": "content_filter"}}
@@ -34,9 +33,8 @@ filtered_response = BadRequestError(
 contextlength_response = BadRequestError(
     message="This model's maximum context length is 4096 tokens. However, your messages resulted in 5069 tokens. Please reduce the length of the messages.",
     body={
-        "message": "This model's maximum context length is 4096 tokens. However, your messages resulted in 5069 tokens. Please reduce the length of the messages.",
+        "message": "This model's maximum context length is 4096 tokens.",
         "code": "context_length_exceeded",
-        "status": 400,
     },
     response=Response(400, request=Request(method="get", url="https://foo.bar/"), json={"error": {"code": "429"}}),
 )
@@ -120,207 +118,18 @@ async def test_cors_allowed(client) -> None:
 
 
 @pytest.mark.asyncio
-async def test_ask_request_must_be_json(client):
-    response = await client.post("/ask")
+async def test_chat_request_must_be_json(client):
+    response = await client.post("/chat")
     assert response.status_code == 415
     result = await response.get_json()
     assert result["error"] == "request must be json"
 
 
 @pytest.mark.asyncio
-async def test_ask_handle_exception(client, monkeypatch, snapshot, caplog):
-    monkeypatch.setattr(
-        "approaches.retrievethenread.RetrieveThenReadApproach.run",
-        mock.Mock(side_effect=ZeroDivisionError("something bad happened")),
-    )
-
-    response = await client.post(
-        "/ask",
-        json={"messages": [{"content": "What is the capital of France?", "role": "user"}]},
-    )
-    assert response.status_code == 500
-    result = await response.get_json()
-    assert "Exception in /ask: something bad happened" in caplog.text
-    snapshot.assert_match(json.dumps(result, indent=4), "result.json")
-
-
-@pytest.mark.asyncio
-async def test_ask_handle_exception_contentsafety(client, monkeypatch, snapshot, caplog):
-    monkeypatch.setattr(
-        "approaches.retrievethenread.RetrieveThenReadApproach.run",
-        mock.Mock(side_effect=filtered_response),
-    )
-
-    response = await client.post(
-        "/ask",
-        json={"messages": [{"content": "How do I do something bad?", "role": "user"}]},
-    )
-    assert response.status_code == 400
-    result = await response.get_json()
-    assert "Exception in /ask: The response was filtered" in caplog.text
-    snapshot.assert_match(json.dumps(result, indent=4), "result.json")
-
-
-@pytest.mark.asyncio
-async def test_ask_handle_exception_contextlength(client, monkeypatch, snapshot, caplog):
-    monkeypatch.setattr(
-        "approaches.retrievethenread.RetrieveThenReadApproach.run",
-        mock.Mock(side_effect=contextlength_response),
-    )
-
-    response = await client.post(
-        "/ask",
-        json={"messages": [{"content": "Super long message with lots of sources.", "role": "user"}]},
-    )
-    assert response.status_code == 500
-    result = await response.get_json()
-    assert (
-        "Exception in /ask: This model's maximum context length is 4096 tokens. However, your messages resulted in 5069 tokens. Please reduce the length of the messages."
-        in caplog.text
-    )
-    snapshot.assert_match(json.dumps(result, indent=4), "result.json")
-
-
-@pytest.mark.asyncio
-async def test_ask_rtr_text(client, snapshot):
-    response = await client.post(
-        "/ask",
-        json={
-            "messages": [{"content": "What is the capital of France?", "role": "user"}],
-            "context": {
-                "overrides": {"retrieval_mode": "text"},
-            },
-        },
-    )
-    assert response.status_code == 200
-    result = await response.get_json()
-    citation_details = pop_citation_activity_details(result)
-    assert citation_details is None
-    snapshot.assert_match(json.dumps(result, indent=4), "result.json")
-
-
-@pytest.mark.asyncio
-async def test_ask_rtr_text_agent(knowledgebase_client, snapshot):
-    response = await knowledgebase_client.post(
-        "/ask",
-        json={
-            "messages": [{"content": "What is the capital of France?", "role": "user"}],
-            "context": {
-                "overrides": {"retrieval_mode": "text", "use_agentic_knowledgebase": True, "use_web_source": False},
-            },
-        },
-    )
-    assert response.status_code == 200
-    result = await response.get_json()
-    snapshot.assert_match(json.dumps(result, indent=4), "result.json")
-
-
-@pytest.mark.asyncio
-async def test_ask_rtr_text_filter(auth_client, snapshot):
-    response = await auth_client.post(
-        "/ask",
-        headers={"Authorization": "Bearer MockToken"},
-        json={
-            "messages": [{"content": "What is the capital of France?", "role": "user"}],
-            "context": {
-                "overrides": {
-                    "retrieval_mode": "text",
-                    "exclude_category": "excluded",
-                },
-            },
-        },
-    )
-    assert response.status_code == 200
-    assert auth_client.config[app.CONFIG_SEARCH_CLIENT].filter == "category ne 'excluded'"
-    assert auth_client.config[app.CONFIG_SEARCH_CLIENT].access_token == "MockToken"
-    result = await response.get_json()
-    snapshot.assert_match(json.dumps(result, indent=4), "result.json")
-
-
-@pytest.mark.asyncio
-async def test_ask_rtr_text_agent_filter(knowledgebase_auth_client, snapshot):
-    response = await knowledgebase_auth_client.post(
-        "/ask",
-        headers={"Authorization": "Bearer MockToken"},
-        json={
-            "messages": [{"content": "What is the capital of France?", "role": "user"}],
-            "context": {
-                "overrides": {
-                    "retrieval_mode": "text",
-                    "exclude_category": "excluded",
-                    "use_agentic_knowledgebase": True,
-                },
-            },
-        },
-    )
-    assert response.status_code == 200
-    assert knowledgebase_auth_client.config[app.CONFIG_KNOWLEDGEBASE_CLIENT].filter == "category ne 'excluded'"
-    assert knowledgebase_auth_client.config[app.CONFIG_KNOWLEDGEBASE_CLIENT].access_token == "MockToken"
-
-    result = await response.get_json()
-    snapshot.assert_match(json.dumps(result, indent=4), "result.json")
-
-
-@pytest.mark.asyncio
-async def test_ask_rtr_text_filter_public_documents(auth_public_documents_client, snapshot):
-    response = await auth_public_documents_client.post(
-        "/ask",
-        headers={"Authorization": "Bearer MockToken"},
-        json={
-            "messages": [{"content": "What is the capital of France?", "role": "user"}],
-            "context": {
-                "overrides": {
-                    "retrieval_mode": "text",
-                    "exclude_category": "excluded",
-                },
-            },
-        },
-    )
-    assert response.status_code == 200
-    assert auth_public_documents_client.config[app.CONFIG_SEARCH_CLIENT].filter == "category ne 'excluded'"
-    assert auth_public_documents_client.config[app.CONFIG_SEARCH_CLIENT].access_token == "MockToken"
-    result = await response.get_json()
-    snapshot.assert_match(json.dumps(result, indent=4), "result.json")
-
-
-@pytest.mark.asyncio
-async def test_ask_rtr_text_semanticranker(client, snapshot):
-    response = await client.post(
-        "/ask",
-        json={
-            "messages": [{"content": "What is the capital of France?", "role": "user"}],
-            "context": {
-                "overrides": {"retrieval_mode": "text", "semantic_ranker": True},
-            },
-        },
-    )
-    assert response.status_code == 200
-    result = await response.get_json()
-    snapshot.assert_match(json.dumps(result, indent=4), "result.json")
-
-
-@pytest.mark.asyncio
-async def test_ask_rtr_text_semanticcaptions(client, snapshot):
-    response = await client.post(
-        "/ask",
-        json={
-            "messages": [{"content": "What is the capital of France?", "role": "user"}],
-            "context": {
-                "overrides": {"retrieval_mode": "text", "semantic_captions": True},
-            },
-        },
-    )
-    assert response.status_code == 200
-    result = await response.get_json()
-    snapshot.assert_match(json.dumps(result, indent=4), "result.json")
-
-
-@pytest.mark.asyncio
-@pytest.mark.parametrize("route", ["/ask", "/chat"])
-async def test_send_text_sources_false(client, route):
+async def test_send_text_sources_false(client):
     """When send_text_sources is False, text sources should be omitted while citations remain."""
     response = await client.post(
-        route,
+        "/chat",
         json={
             "messages": [{"content": "What is the capital of France?", "role": "user"}],
             "context": {"overrides": {"retrieval_mode": "text", "send_text_sources": False}},
@@ -334,11 +143,10 @@ async def test_send_text_sources_false(client, route):
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("route", ["/ask", "/chat"])
-async def test_search_image_embeddings_ignored_without_multimodal(client, route):
+async def test_search_image_embeddings_ignored_without_multimodal(client):
     """Sending search_image_embeddings=True when USE_MULTIMODAL is false should be ignored and still succeed (200)."""
     response = await client.post(
-        route,
+        "/chat",
         json={
             "messages": [{"content": "What is the capital of France?", "role": "user"}],
             "context": {"overrides": {"search_image_embeddings": True, "send_image_sources": True}},
@@ -354,34 +162,10 @@ async def test_search_image_embeddings_ignored_without_multimodal(client, route)
 
 
 @pytest.mark.asyncio
-async def test_ask_rtr_hybrid(client, snapshot):
-    response = await client.post(
-        "/ask",
-        json={
-            "messages": [{"content": "What is the capital of France?", "role": "user"}],
-            "context": {
-                "overrides": {"retrieval_mode": "hybrid"},
-            },
-        },
-    )
-    assert response.status_code == 200
-    result = await response.get_json()
-    snapshot.assert_match(json.dumps(result, indent=4), "result.json")
-
-
-@pytest.mark.asyncio
-async def test_chat_request_must_be_json(client):
-    response = await client.post("/chat")
-    assert response.status_code == 415
-    result = await response.get_json()
-    assert result["error"] == "request must be json"
-
-
-@pytest.mark.asyncio
 async def test_content_file_missing_content_settings(auth_client, monkeypatch):
     blob_manager = auth_client.config[app.CONFIG_GLOBAL_BLOB_MANAGER]
 
-    async def fake_download_blob(_path):
+    async def fake_download_blob(_path, user_oid=None, container=None):
         return b"data", {}
 
     monkeypatch.setattr(blob_manager, "download_blob", fake_download_blob)
@@ -471,7 +255,7 @@ async def test_chat_handle_exception_contentsafety(client, monkeypatch, snapshot
 async def test_chat_handle_exception_streaming(client, monkeypatch, snapshot, caplog):
     chat_client = client.app.config[app.CONFIG_OPENAI_CLIENT]
     monkeypatch.setattr(
-        chat_client.chat.completions, "create", mock.Mock(side_effect=ZeroDivisionError("something bad happened"))
+        chat_client.responses, "create", mock.Mock(side_effect=ZeroDivisionError("something bad happened"))
     )
 
     response = await client.post(
@@ -487,7 +271,7 @@ async def test_chat_handle_exception_streaming(client, monkeypatch, snapshot, ca
 @pytest.mark.asyncio
 async def test_chat_handle_exception_contentsafety_streaming(client, monkeypatch, snapshot, caplog):
     chat_client = client.app.config[app.CONFIG_OPENAI_CLIENT]
-    monkeypatch.setattr(chat_client.chat.completions, "create", mock.Mock(side_effect=filtered_response))
+    monkeypatch.setattr(chat_client.responses, "create", mock.Mock(side_effect=filtered_response))
 
     response = await client.post(
         "/chat/stream",
@@ -726,61 +510,6 @@ async def test_chat_prompt_template(client, snapshot):
     assert response.status_code == 200
     result = await response.get_json()
     assert result["context"]["thoughts"][3]["description"][0]["content"].startswith("You are a cat.")
-    snapshot.assert_match(json.dumps(result, indent=4), "result.json")
-
-
-@pytest.mark.asyncio
-async def test_ask_prompt_template(client, snapshot):
-    response = await client.post(
-        "/ask",
-        json={
-            "messages": [{"content": "What is the capital of France?", "role": "user"}],
-            "context": {
-                "overrides": {"retrieval_mode": "text", "prompt_template": "You are a cat."},
-            },
-        },
-    )
-    assert response.status_code == 200
-    result = await response.get_json()
-    assert result["context"]["thoughts"][2]["description"][0]["content"].startswith("You are a cat.")
-    snapshot.assert_match(json.dumps(result, indent=4), "result.json")
-
-
-@pytest.mark.asyncio
-async def test_chat_prompt_template_concat(client, snapshot):
-    response = await client.post(
-        "/chat",
-        json={
-            "messages": [{"content": "What is the capital of France?", "role": "user"}],
-            "context": {
-                "overrides": {"retrieval_mode": "text", "prompt_template": ">>> Meow like a cat."},
-            },
-        },
-    )
-    assert response.status_code == 200
-    result = await response.get_json()
-    assert result["context"]["thoughts"][3]["description"][0]["content"].startswith("Assistant helps")
-    assert result["context"]["thoughts"][3]["description"][0]["content"].endswith("Meow like a cat.")
-    snapshot.assert_match(json.dumps(result, indent=4), "result.json")
-
-
-@pytest.mark.asyncio
-async def test_ask_prompt_template_concat(client, snapshot):
-    response = await client.post(
-        "/ask",
-        json={
-            "messages": [{"content": "What is the capital of France?", "role": "user"}],
-            "context": {
-                "overrides": {"retrieval_mode": "text", "prompt_template": ">>> Meow like a cat."},
-            },
-        },
-    )
-    assert response.status_code == 200
-    result = await response.get_json()
-    assert result["context"]["thoughts"][2]["description"][0]["content"].startswith(
-        "Assistant helps the company employees"
-    )
-    assert result["context"]["thoughts"][2]["description"][0]["content"].endswith("Meow like a cat.")
     snapshot.assert_match(json.dumps(result, indent=4), "result.json")
 
 
@@ -1129,17 +858,6 @@ async def test_chat_vision_user(monkeypatch, vision_auth_client, mock_user_direc
         json={"messages": [{"content": "Flowers in westbrae nursery logo?", "role": "user"}]},
     )
 
-    assert response.status_code == 200
-    result = await response.get_json()
-    snapshot.assert_match(json.dumps(result, indent=4), "result.json")
-
-
-@pytest.mark.asyncio
-async def test_ask_vision(vision_client, snapshot):
-    response = await vision_client.post(
-        "/ask",
-        json={"messages": [{"content": "Are interest rates high?", "role": "user"}]},
-    )
     assert response.status_code == 200
     result = await response.get_json()
     snapshot.assert_match(json.dumps(result, indent=4), "result.json")

@@ -1,10 +1,19 @@
-import json
+import base64
 
 import pytest
 from azure.core.credentials import AzureKeyCredential
 from azure.search.documents.aio import SearchClient
 from azure.search.documents.models import VectorizedQuery
-from openai.types.chat import ChatCompletion
+from openai.types.responses import (
+    Response,
+    ResponseFunctionToolCall,
+    ResponseOutputMessage,
+    ResponseUsage,
+)
+from openai.types.responses.response_usage import (
+    InputTokensDetails,
+    OutputTokensDetails,
+)
 
 from approaches.approach import (
     ActivityDetail,
@@ -16,7 +25,7 @@ from approaches.approach import (
     WebResult,
 )
 from approaches.chatreadretrieveread import ChatReadRetrieveReadApproach
-from approaches.promptmanager import PromptyManager
+from approaches.promptmanager import PromptManager
 from prepdocslib.embeddings import ImageEmbeddings
 
 from .mocks import (
@@ -36,77 +45,61 @@ async def mock_retrieval(*args, **kwargs):
 
 
 def test_get_search_query(chat_approach):
-    payload = """
-    {
-	"id": "chatcmpl-81JkxYqYppUkPtOAia40gki2vJ9QM",
-	"object": "chat.completion",
-	"created": 1695324963,
-	"model": "gpt-4.1-mini",
-	"prompt_filter_results": [
-		{
-			"prompt_index": 0,
-			"content_filter_results": {
-				"hate": {
-					"filtered": false,
-					"severity": "safe"
-				},
-				"self_harm": {
-					"filtered": false,
-					"severity": "safe"
-				},
-				"sexual": {
-					"filtered": false,
-					"severity": "safe"
-				},
-				"violence": {
-					"filtered": false,
-					"severity": "safe"
-				}
-			}
-		}
-	],
-	"choices": [
-		{
-			"index": 0,
-			"finish_reason": "function_call",
-			"message": {
-				"content": "this is the query",
-				"role": "assistant",
-				"tool_calls": [
-					{
-                        "id": "search_sources1235",
-						"type": "function",
-						"function": {
-							"name": "search_sources",
-							"arguments": "{\\n\\"search_query\\":\\"accesstelemedicineservices\\"\\n}"
-						}
-					}
-				]
-			},
-			"content_filter_results": {
-
-			}
-		}
-	],
-	"usage": {
-		"completion_tokens": 19,
-		"prompt_tokens": 425,
-		"total_tokens": 444
-	}
-}
-"""
+    response = Response(
+        id="resp-81JkxYqYppUkPtOAia40gki2vJ9QM",
+        object="response",
+        parallel_tool_calls=True,
+        tool_choice="auto",
+        tools=[],
+        created_at=1695324963,
+        model="gpt-4.1-mini",
+        output=[
+            ResponseFunctionToolCall(
+                id="fc_search_sources1235",
+                type="function_call",
+                call_id="call_search_sources1235",
+                name="search_sources",
+                arguments='{\n"search_query":"accesstelemedicineservices"\n}',
+                status="completed",
+            ),
+            ResponseOutputMessage(
+                id="msg-1",
+                type="message",
+                role="assistant",
+                status="completed",
+                content=[{"type": "output_text", "text": "this is the query", "annotations": []}],
+            ),
+        ],
+        status="completed",
+    )
     default_query = "hello"
-    chatcompletions = ChatCompletion.model_validate(json.loads(payload), strict=False)
-    query = chat_approach.get_search_query(chatcompletions, default_query)
+    query = chat_approach.get_search_query(response, default_query)
 
     assert query == "accesstelemedicineservices"
 
 
 def test_get_search_query_returns_default(chat_approach):
-    payload = '{"id":"chatcmpl-81JkxYqYppUkPtOAia40gki2vJ9QM","object":"chat.completion","created":1695324963,"model":"gpt-4.1-mini","prompt_filter_results":[{"prompt_index":0,"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}}}],"choices":[{"index":0,"finish_reason":"function_call","message":{"content":"","role":"assistant"},"content_filter_results":{}}],"usage":{"completion_tokens":19,"prompt_tokens":425,"total_tokens":444}}'
+    response = Response(
+        id="resp-81JkxYqYppUkPtOAia40gki2vJ9QM",
+        object="response",
+        parallel_tool_calls=True,
+        tool_choice="auto",
+        tools=[],
+        created_at=1695324963,
+        model="gpt-4.1-mini",
+        output=[
+            ResponseOutputMessage(
+                id="msg-1",
+                type="message",
+                role="assistant",
+                status="completed",
+                content=[{"type": "output_text", "text": "", "annotations": []}],
+            ),
+        ],
+        status="completed",
+    )
     default_query = "hello"
-    chatcompletions = ChatCompletion.model_validate(json.loads(payload), strict=False)
-    query = chat_approach.get_search_query(chatcompletions, default_query)
+    query = chat_approach.get_search_query(response, default_query)
 
     assert query == default_query
 
@@ -117,39 +110,59 @@ def test_get_search_query_returns_default_on_error(chat_approach, monkeypatch):
 
     monkeypatch.setattr(chat_approach, "extract_rewritten_query", explode)
 
-    payload = '{"id":"chatcmpl-1","object":"chat.completion","created":0,"model":"gpt-4.1-mini","choices":[{"index":0,"finish_reason":"stop","message":{"role":"assistant","content":"anything"}}]}'
-    chatcompletions = ChatCompletion.model_validate(json.loads(payload), strict=False)
+    response = Response(
+        id="resp-1",
+        object="response",
+        parallel_tool_calls=True,
+        tool_choice="auto",
+        tools=[],
+        created_at=0,
+        model="gpt-4.1-mini",
+        output=[
+            ResponseOutputMessage(
+                id="msg-1",
+                type="message",
+                role="assistant",
+                status="completed",
+                content=[{"type": "output_text", "text": "anything", "annotations": []}],
+            )
+        ],
+        status="completed",
+    )
 
-    assert chat_approach.get_search_query(chatcompletions, "default") == "default"
+    assert chat_approach.get_search_query(response, "default") == "default"
 
 
 def test_extract_rewritten_query_invalid_json(chat_approach):
-    payload = {
-        "id": "chatcmpl-2",
-        "object": "chat.completion",
-        "created": 0,
-        "model": "gpt-4.1-mini",
-        "choices": [
-            {
-                "index": 0,
-                "finish_reason": "function_call",
-                "message": {
-                    "role": "assistant",
-                    "content": "fallback query",
-                    "tool_calls": [
-                        {
-                            "id": "tool-1",
-                            "type": "function",
-                            "function": {"name": "search_sources", "arguments": "{not-json"},
-                        }
-                    ],
-                },
-            }
+    response = Response(
+        id="resp-2",
+        object="response",
+        parallel_tool_calls=True,
+        tool_choice="auto",
+        tools=[],
+        created_at=0,
+        model="gpt-4.1-mini",
+        output=[
+            ResponseFunctionToolCall(
+                id="fc_tool-1",
+                type="function_call",
+                call_id="call_tool-1",
+                name="search_sources",
+                arguments="{not-json",
+                status="completed",
+            ),
+            ResponseOutputMessage(
+                id="msg-1",
+                type="message",
+                role="assistant",
+                status="completed",
+                content=[{"type": "output_text", "text": "fallback query", "annotations": []}],
+            ),
         ],
-    }
-    completion = ChatCompletion.model_validate(payload, strict=False)
+        status="completed",
+    )
 
-    result = chat_approach.extract_rewritten_query(completion, "original", no_response_token=chat_approach.NO_RESPONSE)
+    result = chat_approach.extract_rewritten_query(response, "original", no_response_token=chat_approach.NO_RESPONSE)
 
     assert result == "fallback query"
 
@@ -298,7 +311,7 @@ async def test_compute_multimodal_embedding_no_client():
         content_field="",
         query_language="en-us",
         query_speller="lexicon",
-        prompt_manager=PromptyManager(),
+        prompt_manager=PromptManager(),
         # Explicitly set image_embeddings_client to None
         image_embeddings_client=None,
     )
@@ -335,16 +348,20 @@ async def test_chat_prompt_render_with_image_directive(chat_approach):
 
     data_points = await build_sources()
 
-    messages = chat_approach.prompt_manager.render_prompt(
-        chat_approach.answer_prompt,
-        {
+    messages = chat_approach.prompt_manager.build_conversation(
+        system_template_path="chat_answer.system.jinja2",
+        system_template_variables={
             "include_follow_up_questions": False,
-            "past_messages": [],
-            "user_query": "What is Fabric Activator?",
-            "text_sources": data_points.text,
             "image_sources": data_points.images,
             "citations": data_points.citations,
         },
+        user_template_path="chat_answer.user.jinja2",
+        user_template_variables={
+            "user_query": "What is Fabric Activator?",
+            "text_sources": data_points.text,
+        },
+        user_image_sources=data_points.images,
+        past_messages=[],
     )
     assert messages
     # Find the user message containing Sources and verify placeholder
@@ -355,6 +372,42 @@ async def test_chat_prompt_render_with_image_directive(chat_approach):
     assert "Diagram that shows the architecture of Fabric Activator." in combined
     # Original unescaped sequence should be gone
     assert ":::image" not in combined
+
+
+@pytest.mark.asyncio
+async def test_get_sources_content_downloads_images_from_images_container(chat_approach, monkeypatch):
+    """Regression test: ensure image URLs in a non-default container download from that container."""
+
+    called: dict[str, str] = {}
+
+    async def fake_download_blob(blob_path: str, user_oid=None, container=None):
+        called["blob_path"] = blob_path
+        called["container"] = container
+        assert user_oid is None
+        return b"abc", {"content_settings": {"content_type": "image/png"}}
+
+    monkeypatch.setattr(chat_approach.global_blob_manager, "download_blob", fake_download_blob)
+
+    image_url = "https://examplestorage.blob.core.windows.net/images/doc1/page0/figure1.png"
+    doc = Document(
+        id="doc1",
+        content="",
+        sourcepage="doc1.pdf#page=1",
+        sourcefile="doc1.pdf",
+        images=[{"url": image_url}],
+    )
+
+    data_points = await chat_approach.get_sources_content(
+        [doc],
+        use_semantic_captions=False,
+        include_text_sources=False,
+        download_image_sources=True,
+        user_oid=None,
+    )
+
+    assert called["container"] == "images"
+    assert called["blob_path"] == "doc1/page0/figure1.png"
+    assert data_points.images == [f"data:image/png;base64,{base64.b64encode(b'abc').decode('utf-8')}"]
 
 
 def test_replace_all_ref_ids_unknown_fallback(chat_approach):
@@ -508,21 +561,32 @@ async def test_run_with_streaming_handles_non_stream_response(chat_approach, mon
     )
 
     async def fake_completion():
-        payload = {
-            "id": "chatcmpl-stream",
-            "object": "chat.completion",
-            "created": 0,
-            "model": "gpt-4.1-mini",
-            "choices": [
-                {
-                    "index": 0,
-                    "finish_reason": "stop",
-                    "message": {"role": "assistant", "content": "Answer text<<Follow up?>>"},
-                }
+        return Response(
+            id="resp-stream",
+            object="response",
+            parallel_tool_calls=True,
+            tool_choice="auto",
+            tools=[],
+            created_at=0,
+            model="gpt-4.1-mini",
+            output=[
+                ResponseOutputMessage(
+                    id="msg-1",
+                    type="message",
+                    role="assistant",
+                    status="completed",
+                    content=[{"type": "output_text", "text": "Answer text<<Follow up?>>", "annotations": []}],
+                )
             ],
-            "usage": {"completion_tokens": 1, "prompt_tokens": 1, "total_tokens": 2},
-        }
-        return ChatCompletion.model_validate(payload, strict=False)
+            status="completed",
+            usage=ResponseUsage(
+                input_tokens=1,
+                output_tokens=1,
+                total_tokens=2,
+                input_tokens_details=InputTokensDetails(cached_tokens=0),
+                output_tokens_details=OutputTokensDetails(reasoning_tokens=0),
+            ),
+        )
 
     async def fake_run_until_final_call(messages, overrides, auth_claims, should_stream):
         assert should_stream is True
@@ -539,10 +603,13 @@ async def test_run_with_streaming_handles_non_stream_response(chat_approach, mon
     ):
         events.append(event)
 
+    assert events[0]["type"] == "response.context"
     assert events[0]["context"] is extra_info
-    assert events[1]["delta"]["content"] == "Answer text"
+    assert events[1]["type"] == "response.output_text.delta"
+    assert events[1]["delta"] == "Answer text"
+    assert events[2]["type"] == "response.context"
     assert events[2]["context"] is extra_info
-    assert events[3]["context"]["followup_questions"] == ["Follow up?"]
+    assert extra_info.followup_questions == ["Follow up?"]
 
 
 @pytest.mark.asyncio

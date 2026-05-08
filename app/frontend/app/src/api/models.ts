@@ -12,7 +12,6 @@ export type ChatAppRequestOverrides = {
     reasoning_effort?: string;
     include_category?: string;
     exclude_category?: string;
-    seed?: number;
     top?: number;
     retrieval_reasoning_effort?: string;
     temperature?: number;
@@ -84,16 +83,14 @@ export type ResponseContext = {
 };
 
 export type ChatAppResponseOrError = {
-    message: ResponseMessage;
-    delta: ResponseMessage;
-    context: ResponseContext;
-    session_state: any;
+    output_text?: string;
+    context?: ResponseContext;
+    session_state?: any;
     error?: string;
 };
 
 export type ChatAppResponse = {
-    message: ResponseMessage;
-    delta: ResponseMessage;
+    output_text: string;
     context: ResponseContext;
     session_state: any;
 };
@@ -110,6 +107,7 @@ export type ChatAppRequest = {
 
 export type Config = {
     defaultReasoningEffort: string;
+    reasoningEffortOptions: string[];
     defaultRetrievalReasoningEffort: string;
     showMultimodalOptions: boolean;
     showSemanticRankerOption: boolean;

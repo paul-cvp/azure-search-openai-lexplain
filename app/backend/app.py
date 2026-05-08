@@ -47,13 +47,10 @@ from quart_cors import cors
 from approaches.orchestrate import Orchestrate
 from approaches.approach import Approach, DataPoints
 from approaches.chatreadretrieveread import ChatReadRetrieveReadApproach
-from approaches.promptmanager import PromptyManager
-from approaches.retrievethenread import RetrieveThenReadApproach
+from approaches.promptmanager import PromptManager
 from chat_history.cosmosdb import chat_history_cosmosdb_bp
 from config import (
     CONFIG_AGENTIC_KNOWLEDGEBASE_ENABLED,
-    CONFIG_ASK_APPROACH,
-    CONFIG_ORCHESTRATE_APPROACH,
     CONFIG_AUTH_CLIENT,
     CONFIG_CHAT_APPROACH,
     CONFIG_CHAT_HISTORY_BROWSER_ENABLED,
@@ -76,6 +73,7 @@ from config import (
     CONFIG_RAG_SEND_IMAGE_SOURCES,
     CONFIG_RAG_SEND_TEXT_SOURCES,
     CONFIG_REASONING_EFFORT_ENABLED,
+    CONFIG_REASONING_EFFORT_OPTIONS,
     CONFIG_SEARCH_CLIENT,
     CONFIG_SEMANTIC_RANKER_DEPLOYED,
     CONFIG_SHAREPOINT_SOURCE_ENABLED,
@@ -186,21 +184,6 @@ async def content_file(path: str, auth_claims: dict[str, Any]):
     return await send_file(blob_file, mimetype=mime_type, as_attachment=False, attachment_filename=path)
 
 
-@bp.route("/ask", methods=["POST"])
-@authenticated
-async def ask(auth_claims: dict[str, Any]):
-    if not request.is_json:
-        return jsonify({"error": "request must be json"}), 415
-    request_json = await request.get_json()
-    context = request_json.get("context", {})
-    context["auth_claims"] = auth_claims
-    try:
-        r = await controller.orchestrate(request_json,context, current_app.config[CONFIG_ORCHESTRATE_APPROACH])
-        return jsonify(r)
-    except Exception as error:
-        return error_response(error, "/ask")
-
-
 class JSONEncoder(json.JSONEncoder):
     def default(self, o):
         if dataclasses.is_dataclass(o) and not isinstance(o, type):
@@ -302,6 +285,7 @@ def config():
             "showReasoningEffortOption": current_app.config[CONFIG_REASONING_EFFORT_ENABLED],
             "streamingEnabled": current_app.config[CONFIG_STREAMING_ENABLED],
             "defaultReasoningEffort": current_app.config[CONFIG_DEFAULT_REASONING_EFFORT],
+            "reasoningEffortOptions": current_app.config[CONFIG_REASONING_EFFORT_OPTIONS],
             "defaultRetrievalReasoningEffort": current_app.config[CONFIG_DEFAULT_RETRIEVAL_REASONING_EFFORT],
             "showVectorOption": current_app.config[CONFIG_VECTOR_SEARCH_ENABLED],
             "showUserUpload": current_app.config[CONFIG_USER_UPLOAD_ENABLED],
@@ -347,7 +331,7 @@ async def speech():
         )
         speech_config = SpeechConfig(auth_token=auth_token, region=current_app.config[CONFIG_SPEECH_SERVICE_LOCATION])
         speech_config.speech_synthesis_voice_name = current_app.config[CONFIG_SPEECH_SERVICE_VOICE]
-        speech_config.speech_synthesis_output_format = SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3
+        speech_config.set_speech_synthesis_output_format(SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3)
         synthesizer = SpeechSynthesizer(speech_config=speech_config, audio_config=None)
         result: SpeechSynthesisResult = synthesizer.speak_text_async(text).get()
         if result.reason == ResultReason.SynthesizingAudioCompleted:
@@ -697,11 +681,9 @@ async def setup_clients():
     )
     current_app.config[CONFIG_DEFAULT_REASONING_EFFORT] = OPENAI_REASONING_EFFORT
     current_app.config[CONFIG_DEFAULT_RETRIEVAL_REASONING_EFFORT] = AGENTIC_KNOWLEDGEBASE_REASONING_EFFORT
-    current_app.config[CONFIG_REASONING_EFFORT_ENABLED] = OPENAI_CHATGPT_MODEL in Approach.GPT_REASONING_MODELS
-    current_app.config[CONFIG_STREAMING_ENABLED] = (
-        OPENAI_CHATGPT_MODEL not in Approach.GPT_REASONING_MODELS
-        or Approach.GPT_REASONING_MODELS[OPENAI_CHATGPT_MODEL].streaming
-    )
+    current_app.config[CONFIG_REASONING_EFFORT_ENABLED] = Approach.is_reasoning_model(OPENAI_CHATGPT_MODEL)
+    current_app.config[CONFIG_REASONING_EFFORT_OPTIONS] = Approach.get_reasoning_effort_options(OPENAI_CHATGPT_MODEL)
+    current_app.config[CONFIG_STREAMING_ENABLED] = True
     current_app.config[CONFIG_VECTOR_SEARCH_ENABLED] = bool(USE_VECTORS)
     current_app.config[CONFIG_USER_UPLOAD_ENABLED] = bool(USE_USER_UPLOAD)
     current_app.config[CONFIG_LANGUAGE_PICKER_ENABLED] = ENABLE_LANGUAGE_PICKER
@@ -721,72 +703,7 @@ async def setup_clients():
         raise ValueError("Web source cannot be used with minimal retrieval reasoning effort")
     current_app.config[CONFIG_SHAREPOINT_SOURCE_ENABLED] = USE_SHAREPOINT_SOURCE
 
-    prompt_manager = PromptyManager()
-
-    # Set up the two default RAG approaches for /ask and /chat
-    # RetrieveThenReadApproach is used by /ask for single-turn Q&A
-
-    current_app.config[CONFIG_ORCHESTRATE_APPROACH] = Orchestrate(
-        search_client=search_client,
-        search_index_name=AZURE_SEARCH_INDEX,
-        knowledgebase_model=AZURE_OPENAI_KNOWLEDGEBASE_MODEL,
-        knowledgebase_deployment=AZURE_OPENAI_KNOWLEDGEBASE_DEPLOYMENT,
-        knowledgebase_client=knowledgebase_client,
-        knowledgebase_client_with_web=knowledgebase_client_with_web,
-        knowledgebase_client_with_sharepoint=knowledgebase_client_with_sharepoint,
-        knowledgebase_client_with_web_and_sharepoint=knowledgebase_client_with_web_and_sharepoint,
-        openai_client=openai_client,
-        chatgpt_model=OPENAI_CHATGPT_MODEL,
-        chatgpt_deployment=AZURE_OPENAI_CHATGPT_DEPLOYMENT,
-        embedding_model=OPENAI_EMB_MODEL,
-        embedding_deployment=AZURE_OPENAI_EMB_DEPLOYMENT,
-        embedding_dimensions=OPENAI_EMB_DIMENSIONS,
-        embedding_field=AZURE_SEARCH_FIELD_NAME_EMBEDDING,
-        sourcepage_field=KB_FIELDS_SOURCEPAGE,
-        content_field=KB_FIELDS_CONTENT,
-        query_language=AZURE_SEARCH_QUERY_LANGUAGE,
-        query_speller=AZURE_SEARCH_QUERY_SPELLER,
-        prompt_manager=prompt_manager,
-        reasoning_effort=OPENAI_REASONING_EFFORT,
-        multimodal_enabled=USE_MULTIMODAL,
-        image_embeddings_client=image_embeddings_client,
-        global_blob_manager=global_blob_manager,
-        user_blob_manager=user_blob_manager,
-        use_web_source=current_app.config[CONFIG_WEB_SOURCE_ENABLED],
-        use_sharepoint_source=current_app.config[CONFIG_SHAREPOINT_SOURCE_ENABLED],
-        retrieval_reasoning_effort=AGENTIC_KNOWLEDGEBASE_REASONING_EFFORT,
-    )
-
-    current_app.config[CONFIG_ASK_APPROACH] = RetrieveThenReadApproach(
-        search_client=search_client,
-        search_index_name=AZURE_SEARCH_INDEX,
-        knowledgebase_model=AZURE_OPENAI_KNOWLEDGEBASE_MODEL,
-        knowledgebase_deployment=AZURE_OPENAI_KNOWLEDGEBASE_DEPLOYMENT,
-        knowledgebase_client=knowledgebase_client,
-        knowledgebase_client_with_web=knowledgebase_client_with_web,
-        knowledgebase_client_with_sharepoint=knowledgebase_client_with_sharepoint,
-        knowledgebase_client_with_web_and_sharepoint=knowledgebase_client_with_web_and_sharepoint,
-        openai_client=openai_client,
-        chatgpt_model=OPENAI_CHATGPT_MODEL,
-        chatgpt_deployment=AZURE_OPENAI_CHATGPT_DEPLOYMENT,
-        embedding_model=OPENAI_EMB_MODEL,
-        embedding_deployment=AZURE_OPENAI_EMB_DEPLOYMENT,
-        embedding_dimensions=OPENAI_EMB_DIMENSIONS,
-        embedding_field=AZURE_SEARCH_FIELD_NAME_EMBEDDING,
-        sourcepage_field=KB_FIELDS_SOURCEPAGE,
-        content_field=KB_FIELDS_CONTENT,
-        query_language=AZURE_SEARCH_QUERY_LANGUAGE,
-        query_speller=AZURE_SEARCH_QUERY_SPELLER,
-        prompt_manager=prompt_manager,
-        reasoning_effort=OPENAI_REASONING_EFFORT,
-        multimodal_enabled=USE_MULTIMODAL,
-        image_embeddings_client=image_embeddings_client,
-        global_blob_manager=global_blob_manager,
-        user_blob_manager=user_blob_manager,
-        use_web_source=current_app.config[CONFIG_WEB_SOURCE_ENABLED],
-        use_sharepoint_source=current_app.config[CONFIG_SHAREPOINT_SOURCE_ENABLED],
-        retrieval_reasoning_effort=AGENTIC_KNOWLEDGEBASE_REASONING_EFFORT,
-    )
+    prompt_manager = PromptManager()
 
     # ChatReadRetrieveReadApproach is used by /chat for multi-turn conversation
     current_app.config[CONFIG_CHAT_APPROACH] = ChatReadRetrieveReadApproach(

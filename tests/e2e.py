@@ -125,7 +125,9 @@ def test_chat(sized_page: Page, live_server_url: str):
     expect(page.get_by_role("button", name="Developer settings")).to_be_enabled()
 
     # Check accessibility of page in initial state
-    results = Axe().run(page)
+    # Exclude Tabster dummy elements which are internal to Fluent UI v9 focus management
+    # and cause a known false positive for aria-hidden-focus (see microsoft/tabster#288)
+    results = Axe().run(page, context={"exclude": ["[data-tabster-dummy]"]})
     assert results.violations_count == 0, results.generate_report()
 
     # Ask a question and wait for the message to appear
@@ -161,6 +163,86 @@ def test_chat(sized_page: Page, live_server_url: str):
     expect(page.get_by_role("button", name="Clear chat")).to_be_disabled()
 
 
+def test_chat_stop_button_visibility(page: Page, live_server_url: str):
+    """Test that the stop button feature works without breaking the chat flow.
+
+    Note: This test verifies the initial and final states but does not assert
+    that the stop button appears during streaming. Testing transient UI states
+    is flaky since the mock returns instantly. A proper test would require a
+    delayed mock response, adding significant complexity for minimal benefit.
+    """
+
+    # Set up a mock route to the /chat endpoint with streaming results
+    def handle(route: Route):
+        # Read the JSONL from our snapshot results and return as the response
+        with open("tests/snapshots/test_app/test_chat_stream_text/client0/result.jsonlines") as f:
+            jsonl = f.read()
+        route.fulfill(body=jsonl, status=200, headers={"Transfer-encoding": "Chunked"})
+
+    page.route("*/**/chat/stream", handle)
+
+    # Check initial page state
+    page.goto(live_server_url)
+    expect(page).to_have_title("Azure OpenAI + AI Search")
+
+    # Verify the submit button is visible initially (not the stop button)
+    expect(page.get_by_label("Submit question")).to_be_visible()
+    expect(page.get_by_label("Stop streaming")).not_to_be_visible()
+
+    # Ask a question
+    page.get_by_placeholder("Type a new question (e.g. does my plan cover annual eye exams?)").click()
+    page.get_by_placeholder("Type a new question (e.g. does my plan cover annual eye exams?)").fill(
+        "Whats the dental plan?"
+    )
+    page.get_by_label("Submit question").click()
+
+    # Wait for the response to complete and verify the submit button is back
+    expect(page.get_by_text("The capital of France is Paris.")).to_be_visible()
+    expect(page.get_by_label("Submit question")).to_be_visible()
+    expect(page.get_by_label("Stop streaming")).not_to_be_visible()
+
+
+def test_chat_stop_restores_question(page: Page, live_server_url: str):
+    """Test that when streaming returns no content, the question is restored to input."""
+
+    # Set up a mock route that returns an empty streaming response (no content)
+    def handle(route: Route):
+        # Return a valid but empty NDJSON stream - this simulates stopping before content arrives
+        # Need at least one event with context/data_points to initialize, but no delta content
+        jsonl = '{"type": "response.context", "context": {"data_points": {"text": []}, "thoughts": []}, "session_state": null}\n'
+        route.fulfill(
+            status=200,
+            headers={"Transfer-encoding": "Chunked", "Content-Type": "application/x-ndjson"},
+            body=jsonl,
+        )
+
+    page.route("*/**/chat/stream", handle)
+
+    # Check initial page state
+    page.goto(live_server_url)
+    expect(page).to_have_title("Azure OpenAI + AI Search")
+
+    # Type a question
+    question_input = page.get_by_placeholder("Type a new question (e.g. does my plan cover annual eye exams?)")
+    question_input.click()
+    question_input.fill("Whats the dental plan?")
+
+    # Submit the question
+    page.get_by_label("Submit question").click()
+
+    # The response contains context but no actual content (no delta.content events)
+    # So the answer should be empty and question should be restored to input
+
+    # Verify the question is restored to the input field
+    expect(question_input).to_have_value("Whats the dental plan?")
+
+    # Verify the submit button is back
+    expect(page.get_by_label("Submit question")).to_be_visible()
+
+    # Verify no answer was added to the chat (Clear chat should be disabled since answer was empty)
+    expect(page.get_by_role("button", name="Clear chat")).to_be_disabled()
+
+
 def test_chat_customization(page: Page, live_server_url: str):
     # Set up a mock route to the /chat endpoint
     def handle(route: Route):
@@ -169,7 +251,7 @@ def test_chat_customization(page: Page, live_server_url: str):
             if post_data and "context" in post_data and "overrides" in post_data["context"]:
                 overrides = post_data["context"]["overrides"]
                 assert overrides["temperature"] == 0.5
-                assert overrides["seed"] == 123
+
                 assert overrides["minimum_search_score"] == 0.5
                 assert overrides["minimum_reranker_score"] == 0.5
                 assert overrides["retrieval_mode"] == "vectors"
@@ -200,8 +282,6 @@ def test_chat_customization(page: Page, live_server_url: str):
     page.get_by_label("Override prompt template").fill("You are a cat and only talk about tuna.")
     page.get_by_label("Temperature").click()
     page.get_by_label("Temperature").fill("0.5")
-    page.get_by_label("Seed").click()
-    page.get_by_label("Seed").fill("123")
     page.get_by_label("Minimum search score").click()
     page.get_by_label("Minimum search score").fill("0.5")
     page.get_by_label("Minimum reranker score").click()
@@ -268,6 +348,7 @@ def test_chat_customization_multimodal(page: Page, live_server_url: str):
                     "showSemanticRankerOption": True,
                     "showQueryRewritingOption": False,
                     "showReasoningEffortOption": False,
+                    "reasoningEffortOptions": [],
                     "streamingEnabled": True,
                     "showVectorOption": True,
                     "showUserUpload": False,
@@ -443,43 +524,6 @@ def test_chat_followup_nonstreaming(page: Page, live_server_url: str):
     expect(page.get_by_text("The capital of France is Paris.")).to_have_count(2)
 
 
-def test_ask(sized_page: Page, live_server_url: str):
-    page = sized_page
-
-    # Set up a mock route to the /ask endpoint
-    def handle(route: Route):
-        # Assert that session_state is specified in the request (None for now)
-        try:
-            post_data = route.request.post_data_json
-            if post_data and "session_state" in post_data:
-                session_state = post_data["session_state"]
-                assert session_state is None
-        except Exception as e:
-            print(f"Error in test_ask handler: {e}")
-
-        # Read the JSON from our snapshot results and return as the response
-        f = open("tests/snapshots/test_app/test_ask_rtr_hybrid/client0/result.json")
-        json_data = f.read()
-        f.close()
-        route.fulfill(body=json_data, status=200)
-
-    page.route("*/**/ask", handle)
-    page.goto(live_server_url)
-    expect(page).to_have_title("Azure OpenAI + AI Search")
-
-    # The burger menu only exists at smaller viewport sizes
-    if page.get_by_role("button", name="Toggle menu").is_visible():
-        page.get_by_role("button", name="Toggle menu").click()
-    page.get_by_role("link", name="Ask a question").click()
-    page.get_by_placeholder("Example: Does my plan cover annual eye exams?").click()
-    page.get_by_placeholder("Example: Does my plan cover annual eye exams?").fill("Whats the dental plan?")
-    page.get_by_placeholder("Example: Does my plan cover annual eye exams?").click()
-    page.get_by_label("Submit question").click()
-
-    expect(page.get_by_text("Whats the dental plan?")).to_be_visible()
-    expect(page.get_by_text("The capital of France is Paris.")).to_be_visible()
-
-
 def test_upload_hidden(page: Page, live_server_url: str):
 
     def handle_auth_setup(route: Route):
@@ -499,6 +543,7 @@ def test_upload_hidden(page: Page, live_server_url: str):
                     "showSemanticRankerOption": True,
                     "showQueryRewritingOption": False,
                     "showReasoningEffortOption": False,
+                    "reasoningEffortOptions": [],
                     "streamingEnabled": True,
                     "showVectorOption": True,
                     "showUserUpload": False,
@@ -549,6 +594,7 @@ def test_upload_disabled(page: Page, live_server_url: str):
                     "showSemanticRankerOption": True,
                     "showQueryRewritingOption": False,
                     "showReasoningEffortOption": False,
+                    "reasoningEffortOptions": [],
                     "streamingEnabled": True,
                     "showVectorOption": True,
                     "showUserUpload": True,
@@ -591,7 +637,6 @@ def test_agentic_retrieval_effort_minimal_disables_web(page: Page, live_server_u
             if post_data and "context" in post_data and "overrides" in post_data["context"]:
                 overrides = post_data["context"]["overrides"]
                 assert overrides["temperature"] == 0.5
-                assert overrides["seed"] == 123
                 assert overrides["minimum_search_score"] == 0.5
                 assert overrides["minimum_reranker_score"] == 0.5
                 assert overrides["retrieval_mode"] == "vectors"
@@ -622,6 +667,7 @@ def test_agentic_retrieval_effort_minimal_disables_web(page: Page, live_server_u
                     "showSemanticRankerOption": True,
                     "showQueryRewritingOption": False,
                     "showReasoningEffortOption": False,
+                    "reasoningEffortOptions": [],
                     "streamingEnabled": True,
                     "showVectorOption": True,
                     "showUserUpload": False,

@@ -1,0 +1,43 @@
+{
+  "case_id": "CASE-2025-103",
+  "summary": "Forælder søger dækning af nødvendige merudgifter og tabt arbejdsfortjeneste ved pasning af barn med psykisk funktionsnedsættelse.",
+  "decision": "Kommunen bevilger både merudgifter og tabt arbejdsfortjeneste.",
+  "decision_outcome": "positiv",
+  "citations": {
+    "law": [
+      {
+        "id": "law86_3",
+        "paragraph": "§ 86",
+        "stk": [1, 2, 3],
+        "excerpt": "Kommunalbestyrelsen skal yde dækning af nødvendige merudgifter ved forsørgelse i hjemmet af et barn under 18 år med betydelig og varigt nedsat psykisk funktionsevne."
+      },
+      {
+        "id": "law87_3",
+        "paragraph": "§ 87",
+        "stk": [1, 3],
+        "excerpt": "Kommunalbestyrelsen skal yde hjælp til dækning af tabt arbejdsfortjeneste til personer, der i hjemmet forsørger et barn under 18 år med betydelig og varigt nedsat psykisk funktionsevne."
+      }
+    ],
+    "guidelines": [
+      {
+        "id": "guidelines_4",
+        "paragraph": "4",
+        "law_id_reference": "law86_3",
+        "excerpt": "Ansøgeren skal fremlægge dokumentation for merudgifter og tabt arbejdsfortjeneste."
+      }
+    ]
+  },
+  "timeline": [
+    {"id": "evt-103-1", "label": "Is child under 18", "timestamp": "2025-03-01T08:00:00Z", "event": "Barnet er 15 år.", "law_paragraphs": ["law86_3","law87_3"]},
+    {"id": "evt-103-2", "label": "Request", "timestamp": "2025-03-02T09:00:00Z", "event": "Ansøgning om dækning af merudgifter og tabt arbejdsfortjeneste indsendt.", "law_paragraphs": ["law86_3","law87_3"]},
+    {"id": "evt-103-3", "label": "Significant or permanent disability", "timestamp": "2025-03-03T10:00:00Z", "event": "Lægeerklæring dokumenterer varigt psykisk handicap.", "law_paragraphs": ["law86_3","law87_3"]},
+    {"id": "evt-103-4", "label": "Not covered by other laws", "timestamp": "2025-03-04T11:00:00Z", "event": "Udgifterne kan ikke dækkes af andre bestemmelser.", "law_paragraphs": ["law86_3"]},
+    {"id": "evt-103-5", "label": "Consequence of disability", "timestamp": "2025-03-05T12:00:00Z", "event": "Merudgifterne og tabt arbejdsfortjeneste er en konsekvens af barnets handicap.", "law_paragraphs": ["law86_3","law87_3"]},
+    {"id": "evt-103-6", "label": "Add expenses", "timestamp": "2025-03-06T13:00:00Z", "event": "Forælder opgør og dokumenterer merudgifter og tabt arbejdsfortjeneste.", "law_paragraphs": ["law86_3","law87_3"]},
+    {"id": "evt-103-7", "label": "Expense", "timestamp": "2025-03-07T14:00:00Z", "event": "Udgifter til hjælpemidler og tabt arbejdsfortjeneste indsendt.", "law_paragraphs": ["law86_3","law87_3"]},
+    {"id": "evt-103-8", "label": "Amount", "timestamp": "2025-03-08T15:00:00Z", "event": "Samlede merudgifter og tabt arbejdsfortjeneste overstiger minimumsgrænsen.", "law_paragraphs": ["law86_3","law87_3"]},
+    {"id": "evt-103-9", "label": "Description", "timestamp": "2025-03-09T16:00:00Z", "event": "Detaljeret beskrivelse af udgifter og tab fremlagt.", "law_paragraphs": ["law86_3","law87_3"]},
+    {"id": "evt-103-10", "label": "Law facts", "timestamp": "2025-03-10T17:00:00Z", "event": "Kommunen vurderer sagen ud fra §§ 86 og 87.", "law_paragraphs": ["law86_3","law87_3"]},
+    {"id": "evt-103-11", "label": "Dækning af nødvendige merudgifter", "timestamp": "2025-03-11T18:00:00Z", "event": "Afgørelse: Dækning af nødvendige merudgifter og tabt arbejdsfortjeneste bevilges.", "law_paragraphs": ["law86_3","law87_3"]}
+  ]
+}

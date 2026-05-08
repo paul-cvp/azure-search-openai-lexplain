@@ -44,6 +44,7 @@ from quart import (
 )
 from quart_cors import cors
 
+from approaches.orchestrate import Orchestrate
 from approaches.approach import Approach, DataPoints
 from approaches.chatreadretrieveread import ChatReadRetrieveReadApproach
 from approaches.promptmanager import PromptyManager
@@ -52,6 +53,7 @@ from chat_history.cosmosdb import chat_history_cosmosdb_bp
 from config import (
     CONFIG_AGENTIC_KNOWLEDGEBASE_ENABLED,
     CONFIG_ASK_APPROACH,
+    CONFIG_ORCHESTRATE_APPROACH,
     CONFIG_AUTH_CLIENT,
     CONFIG_CHAT_APPROACH,
     CONFIG_CHAT_HISTORY_BROWSER_ENABLED,
@@ -106,6 +108,8 @@ from prepdocslib.blobmanager import AdlsBlobManager, BlobManager
 from prepdocslib.embeddings import ImageEmbeddings
 from prepdocslib.filestrategy import UploadUserFileStrategy
 from prepdocslib.listfilestrategy import File
+
+from controller import controller
 
 bp = Blueprint("routes", __name__, static_folder="static")
 # Fix Windows registry issue with mimetypes
@@ -191,10 +195,7 @@ async def ask(auth_claims: dict[str, Any]):
     context = request_json.get("context", {})
     context["auth_claims"] = auth_claims
     try:
-        approach: Approach = cast(Approach, current_app.config[CONFIG_ASK_APPROACH])
-        r = await approach.run(
-            request_json["messages"], context=context, session_state=request_json.get("session_state")
-        )
+        r = await controller.orchestrate(request_json,context, current_app.config[CONFIG_ORCHESTRATE_APPROACH])
         return jsonify(r)
     except Exception as error:
         return error_response(error, "/ask")
@@ -724,6 +725,37 @@ async def setup_clients():
 
     # Set up the two default RAG approaches for /ask and /chat
     # RetrieveThenReadApproach is used by /ask for single-turn Q&A
+
+    current_app.config[CONFIG_ORCHESTRATE_APPROACH] = Orchestrate(
+        search_client=search_client,
+        search_index_name=AZURE_SEARCH_INDEX,
+        knowledgebase_model=AZURE_OPENAI_KNOWLEDGEBASE_MODEL,
+        knowledgebase_deployment=AZURE_OPENAI_KNOWLEDGEBASE_DEPLOYMENT,
+        knowledgebase_client=knowledgebase_client,
+        knowledgebase_client_with_web=knowledgebase_client_with_web,
+        knowledgebase_client_with_sharepoint=knowledgebase_client_with_sharepoint,
+        knowledgebase_client_with_web_and_sharepoint=knowledgebase_client_with_web_and_sharepoint,
+        openai_client=openai_client,
+        chatgpt_model=OPENAI_CHATGPT_MODEL,
+        chatgpt_deployment=AZURE_OPENAI_CHATGPT_DEPLOYMENT,
+        embedding_model=OPENAI_EMB_MODEL,
+        embedding_deployment=AZURE_OPENAI_EMB_DEPLOYMENT,
+        embedding_dimensions=OPENAI_EMB_DIMENSIONS,
+        embedding_field=AZURE_SEARCH_FIELD_NAME_EMBEDDING,
+        sourcepage_field=KB_FIELDS_SOURCEPAGE,
+        content_field=KB_FIELDS_CONTENT,
+        query_language=AZURE_SEARCH_QUERY_LANGUAGE,
+        query_speller=AZURE_SEARCH_QUERY_SPELLER,
+        prompt_manager=prompt_manager,
+        reasoning_effort=OPENAI_REASONING_EFFORT,
+        multimodal_enabled=USE_MULTIMODAL,
+        image_embeddings_client=image_embeddings_client,
+        global_blob_manager=global_blob_manager,
+        user_blob_manager=user_blob_manager,
+        use_web_source=current_app.config[CONFIG_WEB_SOURCE_ENABLED],
+        use_sharepoint_source=current_app.config[CONFIG_SHAREPOINT_SOURCE_ENABLED],
+        retrieval_reasoning_effort=AGENTIC_KNOWLEDGEBASE_REASONING_EFFORT,
+    )
 
     current_app.config[CONFIG_ASK_APPROACH] = RetrieveThenReadApproach(
         search_client=search_client,

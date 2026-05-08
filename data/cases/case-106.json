@@ -1,0 +1,32 @@
+{
+  "case_id": "CASE-2025-106",
+  "summary": "Forælder søger dækning af nødvendige merudgifter til barn med varigt handicap, men dokumentation mangler.",
+  "decision": "Kommunen afviser ansøgningen på grund af manglende dokumentation.",
+  "decision_outcome": "negativ",
+  "citations": {
+    "law": [
+      {
+        "id": "law86_6",
+        "paragraph": "§ 86",
+        "stk": [1],
+        "excerpt": "Ansøgeren skal fremlægge dokumentation for merudgifter."
+      }
+    ],
+    "guidelines": [
+      {
+        "id": "guidelines_4",
+        "paragraph": "4",
+        "law_id_reference": "law86_6",
+        "excerpt": "Ansøgeren skal fremlægge dokumentation for merudgifter."
+      }
+    ]
+  },
+  "timeline": [
+    {"id": "evt-106-1", "label": "Is child under 18", "timestamp": "2025-06-01T08:00:00Z", "event": "Barnet er 7 år.", "law_paragraphs": ["law86_6"]},
+    {"id": "evt-106-2", "label": "Request", "timestamp": "2025-06-02T09:00:00Z", "event": "Ansøgning om dækning af merudgifter indsendt.", "law_paragraphs": ["law86_6"]},
+    {"id": "evt-106-3", "label": "Significant or permanent disability", "timestamp": "2025-06-03T10:00:00Z", "event": "Lægeerklæring dokumenterer varigt handicap.", "law_paragraphs": ["law86_6"]},
+    {"id": "evt-106-4", "label": "Add expenses", "timestamp": "2025-06-04T11:00:00Z", "event": "Ingen dokumentation for merudgifter fremlagt.", "law_paragraphs": ["law86_6"]},
+    {"id": "evt-106-5", "label": "Law facts", "timestamp": "2025-06-05T12:00:00Z", "event": "Kommunen vurderer sagen ud fra § 86.", "law_paragraphs": ["law86_6"]},
+    {"id": "evt-106-6", "label": "Do not cover", "timestamp": "2025-06-06T13:00:00Z", "event": "Afgørelse: Dækning af nødvendige merudgifter afvises på grund af manglende dokumentation.", "law_paragraphs": ["law86_6"]}
+  ]
+}

@@ -1,0 +1,3 @@
+IN DANISH!!! Create 10 json files in the data/cases folder. It is for case based reasoning systems. 
+All 10 cases are based specifically on the laws from the extracted "paragraphs86-88.txt" 
+(extracted from the larger "law.txt" file). The law has guidelines for its interpretation in the "guidelines.txt" file.

@@ -1,0 +1,37 @@
+{
+  "case_id": "CASE-2025-101",
+  "summary": "Forælder søger dækning af nødvendige merudgifter til hjemmepleje af barn med varigt fysisk handicap.",
+  "decision": "Kommunen bevilger dækning af dokumenterede merudgifter.",
+  "decision_outcome": "positiv",
+  "citations": {
+    "law": [
+      {
+        "id": "law86_1",
+        "paragraph": "§ 86",
+        "stk": [1, 2, 3],
+        "excerpt": "Kommunalbestyrelsen skal yde dækning af nødvendige merudgifter ved forsørgelse i hjemmet af et barn under 18 år med betydelig og varigt nedsat fysisk funktionsevne. Udmålingen sker på grundlag af de sandsynliggjorte merudgifter."
+      }
+    ],
+    "guidelines": [
+      {
+        "id": "guidelines_4",
+        "paragraph": "4",
+        "law_id_reference": "law86_1",
+        "excerpt": "Ansøgeren skal fremlægge dokumentation for merudgifter, herunder lægeerklæring og opgørelse over udgifter."
+      }
+    ]
+  },
+  "timeline": [
+    {"id": "evt-101-1", "label": "Is child under 18", "timestamp": "2025-01-10T08:00:00Z", "event": "Barnet er 12 år.", "law_paragraphs": ["law86_1"]},
+    {"id": "evt-101-2", "label": "Request", "timestamp": "2025-01-12T09:00:00Z", "event": "Ansøgning om dækning af merudgifter indsendt.", "law_paragraphs": ["law86_1"]},
+    {"id": "evt-101-3", "label": "Significant or permanent disability", "timestamp": "2025-01-13T10:00:00Z", "event": "Lægeerklæring dokumenterer varigt fysisk handicap.", "law_paragraphs": ["law86_1"]},
+    {"id": "evt-101-4", "label": "Not covered by other laws", "timestamp": "2025-01-14T11:00:00Z", "event": "Udgifterne kan ikke dækkes af andre bestemmelser.", "law_paragraphs": ["law86_1"]},
+    {"id": "evt-101-5", "label": "Consequence of disability", "timestamp": "2025-01-15T12:00:00Z", "event": "Merudgifterne er en konsekvens af barnets handicap.", "law_paragraphs": ["law86_1"]},
+    {"id": "evt-101-6", "label": "Add expenses", "timestamp": "2025-01-16T13:00:00Z", "event": "Forælder opgør og dokumenterer merudgifter.", "law_paragraphs": ["law86_1"]},
+    {"id": "evt-101-7", "label": "Expense", "timestamp": "2025-01-17T14:00:00Z", "event": "Udgifter til hjælpemidler og transport indsendt.", "law_paragraphs": ["law86_1"]},
+    {"id": "evt-101-8", "label": "Amount", "timestamp": "2025-01-18T15:00:00Z", "event": "Samlede merudgifter overstiger minimumsgrænsen.", "law_paragraphs": ["law86_1"]},
+    {"id": "evt-101-9", "label": "Description", "timestamp": "2025-01-19T16:00:00Z", "event": "Detaljeret beskrivelse af udgifter fremlagt.", "law_paragraphs": ["law86_1"]},
+    {"id": "evt-101-10", "label": "Law facts", "timestamp": "2025-01-20T17:00:00Z", "event": "Kommunen vurderer sagen ud fra § 86.", "law_paragraphs": ["law86_1"]},
+    {"id": "evt-101-11", "label": "Dækning af nødvendige merudgifter", "timestamp": "2025-01-21T18:00:00Z", "event": "Afgørelse: Dækning af nødvendige merudgifter bevilges.", "law_paragraphs": ["law86_1"]}
+  ]
+}

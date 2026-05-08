@@ -1,0 +1,13 @@
+.dcrContainer {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    margin-top: 10rem;
+    min-height: 1000px;
+}
+
+@media (min-width: 992px) {
+    .dcrContainer {
+        margin-top: 0rem;
+    }
+}

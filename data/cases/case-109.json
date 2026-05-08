@@ -1,0 +1,31 @@
+{
+  "case_id": "CASE-2025-109",
+  "summary": "Forælder søger dækning af nødvendige merudgifter til barn med varigt handicap, men ansøgningen mangler lægeerklæring.",
+  "decision": "Kommunen afviser ansøgningen på grund af manglende lægeerklæring.",
+  "decision_outcome": "negativ",
+  "citations": {
+    "law": [
+      {
+        "id": "law86_9",
+        "paragraph": "§ 86",
+        "stk": [1],
+        "excerpt": "Ansøgeren skal fremlægge lægeerklæring for at dokumentere funktionsnedsættelsen."
+      }
+    ],
+    "guidelines": [
+      {
+        "id": "guidelines_4",
+        "paragraph": "4",
+        "law_id_reference": "law86_9",
+        "excerpt": "Ansøgeren skal fremlægge lægeerklæring og opgørelse over udgifter."
+      }
+    ]
+  },
+  "timeline": [
+    {"id": "evt-109-1", "label": "Is child under 18", "timestamp": "2025-09-01T08:00:00Z", "event": "Barnet er 6 år.", "law_paragraphs": ["law86_9"]},
+    {"id": "evt-109-2", "label": "Request", "timestamp": "2025-09-02T09:00:00Z", "event": "Ansøgning om dækning af merudgifter indsendt.", "law_paragraphs": ["law86_9"]},
+    {"id": "evt-109-3", "label": "Add expenses", "timestamp": "2025-09-03T10:00:00Z", "event": "Forælder opgør og dokumenterer merudgifter.", "law_paragraphs": ["law86_9"]},
+    {"id": "evt-109-4", "label": "Law facts", "timestamp": "2025-09-04T11:00:00Z", "event": "Kommunen vurderer sagen ud fra § 86.", "law_paragraphs": ["law86_9"]},
+    {"id": "evt-109-5", "label": "Do not cover", "timestamp": "2025-09-05T12:00:00Z", "event": "Afgørelse: Dækning af nødvendige merudgifter afvises på grund af manglende lægeerklæring.", "law_paragraphs": ["law86_9"]}
+  ]
+}

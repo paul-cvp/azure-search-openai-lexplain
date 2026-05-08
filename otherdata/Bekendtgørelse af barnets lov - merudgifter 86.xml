@@ -1,0 +1,755 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<dcrgraph title="Lexplain - Bekendtgørelse af barnets lov - merudgifter 86 no spawn" dataTypesStatus="hide" filterLevel="-1" insightFilter="false" zoomLevel="0" formGroupStyle="Normal" formLayoutStyle="Horizontal" formShowPendingCount="true" graphBG="#f1f6fe" graphType="0" exercise="false" version="1.1">
+    <meta>
+        <graph id="2005454" hash="33F0BF1E333D3B2F6BC1DFA26A1E6E3C" guid="DE002BB0-4271-41A0-BCAC-D2768FC53B64" OwnerName="Vlad Paul Cosma" OwnerId="2275" categoryId="5542" categoryTitle="Default" Keywords=""/>
+        <revision id="5208021" type="medium" date="2025-12-11T14:22:52.157"/>
+        <organization id="57" name="EcoKnow"/>
+        <environment environment="Test"/>
+    </meta>
+    <specification>
+        <resources>
+            <events>
+                <event id="A3">
+                    <precondition message=""/>
+                    <custom>
+                        <visualization>
+                            <location xLoc="1200" yLoc="370"/>
+                            <colors bg="#f9f7ed" textStroke="#000000" stroke="#cccccc"/>
+                        </visualization>
+                        <roles>
+                            <role>Robot</role>
+                        </roles>
+                        <readRoles>
+                            <readRole/>
+                        </readRoles>
+                        <groups>
+                            <group/>
+                        </groups>
+                        <phases>
+                            <phase/>
+                        </phases>
+                        <eventType/>
+                        <eventScope>private</eventScope>
+                        <eventTypeData/>
+                        <eventDescription/>
+                        <purpose/>
+                        <guide/>
+                        <insight use="false"/>
+                        <level>100</level>
+                        <sequence>2</sequence>
+                        <costs>0</costs>
+                        <eventData/>
+                        <interfaces/>
+                    </custom>
+                </event>
+                <event id="A4" type="subprocess">
+                    <precondition message=""/>
+                    <custom>
+                        <visualization>
+                            <location xLoc="270" yLoc="320"/>
+                            <colors bg="#f9f7ed" textStroke="#000000" stroke="#cccccc"/>
+                        </visualization>
+                        <roles>
+                            <role/>
+                        </roles>
+                        <readRoles>
+                            <readRole/>
+                        </readRoles>
+                        <groups>
+                            <group/>
+                        </groups>
+                        <phases>
+                            <phase/>
+                        </phases>
+                        <eventType/>
+                        <eventScope>private</eventScope>
+                        <eventTypeData/>
+                        <eventDescription/>
+                        <purpose/>
+                        <guide/>
+                        <insight use="false"/>
+                        <level>100</level>
+                        <sequence>3</sequence>
+                        <costs>0</costs>
+                        <eventData/>
+                        <interfaces/>
+                    </custom>
+                    <event id="A9">
+                        <precondition message=""/>
+                        <custom>
+                            <visualization>
+                                <location xLoc="300" yLoc="370"/>
+                                <colors bg="#f9f7ed" textStroke="#000000" stroke="#cccccc"/>
+                            </visualization>
+                            <roles>
+                                <role>Citizen Data</role>
+                            </roles>
+                            <readRoles>
+                                <readRole/>
+                            </readRoles>
+                            <groups>
+                                <group/>
+                            </groups>
+                            <phases>
+                                <phase/>
+                            </phases>
+                            <eventType/>
+                            <eventScope>private</eventScope>
+                            <eventTypeData/>
+                            <eventDescription/>
+                            <purpose/>
+                            <guide/>
+                            <insight use="false"/>
+                            <level>100</level>
+                            <sequence>8</sequence>
+                            <costs>0</costs>
+                            <eventData>
+                                <dataType sequence="8" width="small" min="NaN" max="NaN" placeholder="Age" hinttext="">int</dataType>
+                                <validationRules/>
+                            </eventData>
+                            <interfaces/>
+                        </custom>
+                    </event>
+                    <event id="A10">
+                        <precondition message=""/>
+                        <custom>
+                            <visualization>
+                                <location xLoc="450" yLoc="570"/>
+                                <colors bg="#f9f7ed" textStroke="#000000" stroke="#cccccc"/>
+                            </visualization>
+                            <roles>
+                                <role>Citizen Data</role>
+                            </roles>
+                            <readRoles>
+                                <readRole/>
+                            </readRoles>
+                            <groups>
+                                <group/>
+                            </groups>
+                            <phases>
+                                <phase/>
+                            </phases>
+                            <eventType/>
+                            <eventScope>private</eventScope>
+                            <eventTypeData/>
+                            <eventDescription/>
+                            <purpose/>
+                            <guide/>
+                            <insight use="false"/>
+                            <level>100</level>
+                            <sequence>9</sequence>
+                            <costs>0</costs>
+                            <eventData/>
+                            <interfaces/>
+                        </custom>
+                    </event>
+                    <event id="A11">
+                        <precondition message=""/>
+                        <custom>
+                            <visualization>
+                                <location xLoc="300" yLoc="570"/>
+                                <colors bg="#f9f7ed" textStroke="#000000" stroke="#cccccc"/>
+                            </visualization>
+                            <roles>
+                                <role>Citizen Data</role>
+                            </roles>
+                            <readRoles>
+                                <readRole/>
+                            </readRoles>
+                            <groups>
+                                <group/>
+                            </groups>
+                            <phases>
+                                <phase/>
+                            </phases>
+                            <eventType/>
+                            <eventScope>private</eventScope>
+                            <eventTypeData/>
+                            <eventDescription/>
+                            <purpose/>
+                            <guide/>
+                            <insight use="false"/>
+                            <level>100</level>
+                            <sequence>10</sequence>
+                            <costs>0</costs>
+                            <eventData/>
+                            <interfaces/>
+                        </custom>
+                    </event>
+                    <event id="A12">
+                        <precondition message=""/>
+                        <custom>
+                            <visualization>
+                                <location xLoc="450" yLoc="370"/>
+                                <colors bg="#f9f7ed" textStroke="#000000" stroke="#cccccc"/>
+                            </visualization>
+                            <roles>
+                                <role>Citizen Data</role>
+                            </roles>
+                            <readRoles>
+                                <readRole/>
+                            </readRoles>
+                            <groups>
+                                <group/>
+                            </groups>
+                            <phases>
+                                <phase/>
+                            </phases>
+                            <eventType/>
+                            <eventScope>private</eventScope>
+                            <eventTypeData/>
+                            <eventDescription/>
+                            <purpose/>
+                            <guide/>
+                            <insight use="false"/>
+                            <level>100</level>
+                            <sequence>11</sequence>
+                            <costs>0</costs>
+                            <eventData/>
+                            <interfaces/>
+                        </custom>
+                    </event>
+                    <event id="A17" type="subprocess">
+                        <precondition message=""/>
+                        <custom>
+                            <visualization>
+                                <location xLoc="750" yLoc="370"/>
+                                <colors bg="#f9f7ed" textStroke="#000000" stroke="#cccccc"/>
+                            </visualization>
+                            <roles>
+                                <role/>
+                            </roles>
+                            <readRoles>
+                                <readRole/>
+                            </readRoles>
+                            <groups>
+                                <group/>
+                            </groups>
+                            <phases>
+                                <phase/>
+                            </phases>
+                            <eventType/>
+                            <eventScope>private</eventScope>
+                            <eventTypeData/>
+                            <eventDescription/>
+                            <purpose/>
+                            <guide/>
+                            <insight use="false"/>
+                            <level>100</level>
+                            <sequence>16</sequence>
+                            <costs>0</costs>
+                            <eventData/>
+                            <interfaces/>
+                        </custom>
+                        <event id="A15">
+                            <precondition message=""/>
+                            <custom>
+                                <visualization>
+                                    <location xLoc="780" yLoc="570"/>
+                                    <colors bg="#f9f7ed" textStroke="#000000" stroke="#cccccc"/>
+                                </visualization>
+                                <roles>
+                                    <role>Citizen Data</role>
+                                </roles>
+                                <readRoles>
+                                    <readRole/>
+                                </readRoles>
+                                <groups>
+                                    <group/>
+                                </groups>
+                                <phases>
+                                    <phase/>
+                                </phases>
+                                <eventType/>
+                                <eventScope>private</eventScope>
+                                <eventTypeData/>
+                                <eventDescription/>
+                                <purpose/>
+                                <guide/>
+                                <insight use="false"/>
+                                <level>100</level>
+                                <sequence>14</sequence>
+                                <costs>0</costs>
+                                <eventData/>
+                                <interfaces/>
+                            </custom>
+                        </event>
+                        <event id="A16">
+                            <precondition message=""/>
+                            <custom>
+                                <visualization>
+                                    <location xLoc="780" yLoc="420"/>
+                                    <colors bg="#f9f7ed" textStroke="#000000" stroke="#cccccc"/>
+                                </visualization>
+                                <roles>
+                                    <role>Citizen Data</role>
+                                </roles>
+                                <readRoles>
+                                    <readRole/>
+                                </readRoles>
+                                <groups>
+                                    <group/>
+                                </groups>
+                                <phases>
+                                    <phase/>
+                                </phases>
+                                <eventType/>
+                                <eventScope>private</eventScope>
+                                <eventTypeData/>
+                                <eventDescription/>
+                                <purpose/>
+                                <guide/>
+                                <insight use="false"/>
+                                <level>100</level>
+                                <sequence>15</sequence>
+                                <costs>0</costs>
+                                <eventData/>
+                                <interfaces/>
+                            </custom>
+                        </event>
+                    </event>
+                    <event id="A14">
+                        <precondition message=""/>
+                        <custom>
+                            <visualization>
+                                <location xLoc="600" yLoc="520"/>
+                                <colors bg="#f9f7ed" textStroke="#000000" stroke="#cccccc"/>
+                            </visualization>
+                            <roles>
+                                <role>Citizen Data</role>
+                            </roles>
+                            <readRoles>
+                                <readRole/>
+                            </readRoles>
+                            <groups>
+                                <group/>
+                            </groups>
+                            <phases>
+                                <phase/>
+                            </phases>
+                            <eventType/>
+                            <eventScope>private</eventScope>
+                            <eventTypeData/>
+                            <eventDescription/>
+                            <purpose/>
+                            <guide/>
+                            <insight use="false"/>
+                            <level>100</level>
+                            <sequence>13</sequence>
+                            <costs>0</costs>
+                            <eventData/>
+                            <interfaces/>
+                        </custom>
+                    </event>
+                </event>
+                <event id="A5" type="subprocess">
+                    <precondition message=""/>
+                    <custom>
+                        <visualization>
+                            <location xLoc="1500" yLoc="320"/>
+                            <colors bg="#f9f7ed" textStroke="#000000" stroke="#cccccc"/>
+                        </visualization>
+                        <roles>
+                            <role/>
+                        </roles>
+                        <readRoles>
+                            <readRole/>
+                        </readRoles>
+                        <groups>
+                            <group/>
+                        </groups>
+                        <phases>
+                            <phase/>
+                        </phases>
+                        <eventType/>
+                        <eventScope>private</eventScope>
+                        <eventTypeData/>
+                        <eventDescription/>
+                        <purpose/>
+                        <guide/>
+                        <insight use="false"/>
+                        <level>100</level>
+                        <sequence>4</sequence>
+                        <costs>0</costs>
+                        <eventData/>
+                        <interfaces/>
+                    </custom>
+                    <event id="A1">
+                        <precondition message=""/>
+                        <custom>
+                            <visualization>
+                                <location xLoc="1530" yLoc="370"/>
+                                <colors bg="#f9f7ed" textStroke="#000000" stroke="#cccccc"/>
+                            </visualization>
+                            <roles>
+                                <role/>
+                            </roles>
+                            <readRoles>
+                                <readRole/>
+                            </readRoles>
+                            <groups>
+                                <group/>
+                            </groups>
+                            <phases>
+                                <phase/>
+                            </phases>
+                            <eventType/>
+                            <eventScope>private</eventScope>
+                            <eventTypeData/>
+                            <eventDescription/>
+                            <purpose/>
+                            <guide/>
+                            <insight use="false"/>
+                            <level>100</level>
+                            <sequence>0</sequence>
+                            <costs>0</costs>
+                            <eventData/>
+                            <interfaces/>
+                        </custom>
+                    </event>
+                    <event id="A2">
+                        <precondition message=""/>
+                        <custom>
+                            <visualization>
+                                <location xLoc="1650" yLoc="370"/>
+                                <colors bg="#f9f7ed" textStroke="#000000" stroke="#cccccc"/>
+                            </visualization>
+                            <roles>
+                                <role/>
+                            </roles>
+                            <readRoles>
+                                <readRole/>
+                            </readRoles>
+                            <groups>
+                                <group/>
+                            </groups>
+                            <phases>
+                                <phase/>
+                            </phases>
+                            <eventType/>
+                            <eventScope>private</eventScope>
+                            <eventTypeData/>
+                            <eventDescription/>
+                            <purpose/>
+                            <guide/>
+                            <insight use="false"/>
+                            <level>100</level>
+                            <sequence>1</sequence>
+                            <costs>0</costs>
+                            <eventData/>
+                            <interfaces/>
+                        </custom>
+                    </event>
+                </event>
+                <event id="A6" type="subprocess">
+                    <precondition message=""/>
+                    <custom>
+                        <visualization>
+                            <location xLoc="1100" yLoc="520"/>
+                            <colors bg="#f9f7ed" textStroke="#000000" stroke="#cccccc"/>
+                        </visualization>
+                        <roles>
+                            <role/>
+                        </roles>
+                        <readRoles>
+                            <readRole/>
+                        </readRoles>
+                        <groups>
+                            <group/>
+                        </groups>
+                        <phases>
+                            <phase/>
+                        </phases>
+                        <eventType/>
+                        <eventScope>private</eventScope>
+                        <eventTypeData/>
+                        <eventDescription/>
+                        <purpose/>
+                        <guide/>
+                        <insight use="false"/>
+                        <level>100</level>
+                        <sequence>5</sequence>
+                        <costs>0</costs>
+                        <eventData/>
+                        <interfaces/>
+                    </custom>
+                    <event id="A7">
+                        <precondition message=""/>
+                        <custom>
+                            <visualization>
+                                <location xLoc="1130" yLoc="570"/>
+                                <colors bg="#f9f7ed" textStroke="#000000" stroke="#cccccc"/>
+                            </visualization>
+                            <roles>
+                                <role>Case Management System</role>
+                            </roles>
+                            <readRoles>
+                                <readRole/>
+                            </readRoles>
+                            <groups>
+                                <group/>
+                            </groups>
+                            <phases>
+                                <phase/>
+                            </phases>
+                            <eventType/>
+                            <eventScope>private</eventScope>
+                            <eventTypeData/>
+                            <eventDescription/>
+                            <purpose/>
+                            <guide/>
+                            <insight use="false"/>
+                            <level>100</level>
+                            <sequence>6</sequence>
+                            <costs>0</costs>
+                            <eventData/>
+                            <interfaces/>
+                        </custom>
+                    </event>
+                    <event id="A8">
+                        <precondition message=""/>
+                        <custom>
+                            <visualization>
+                                <location xLoc="1130" yLoc="720"/>
+                                <colors bg="#f9f7ed" textStroke="#000000" stroke="#cccccc"/>
+                            </visualization>
+                            <roles>
+                                <role>Case Management System</role>
+                            </roles>
+                            <readRoles>
+                                <readRole/>
+                            </readRoles>
+                            <groups>
+                                <group/>
+                            </groups>
+                            <phases>
+                                <phase/>
+                            </phases>
+                            <eventType/>
+                            <eventScope>private</eventScope>
+                            <eventTypeData/>
+                            <eventDescription/>
+                            <purpose/>
+                            <guide/>
+                            <insight use="false"/>
+                            <level>100</level>
+                            <sequence>7</sequence>
+                            <costs>0</costs>
+                            <eventData/>
+                            <interfaces/>
+                        </custom>
+                    </event>
+                    <event id="A13">
+                        <precondition message=""/>
+                        <custom>
+                            <visualization>
+                                <location xLoc="1280" yLoc="570"/>
+                                <colors bg="#f9f7ed" textStroke="#000000" stroke="#cccccc"/>
+                            </visualization>
+                            <roles>
+                                <role>Case Management System</role>
+                            </roles>
+                            <readRoles>
+                                <readRole/>
+                            </readRoles>
+                            <groups>
+                                <group/>
+                            </groups>
+                            <phases>
+                                <phase/>
+                            </phases>
+                            <eventType/>
+                            <eventScope>private</eventScope>
+                            <eventTypeData/>
+                            <eventDescription/>
+                            <purpose/>
+                            <guide/>
+                            <insight use="false"/>
+                            <level>100</level>
+                            <sequence>12</sequence>
+                            <costs>0</costs>
+                            <eventData/>
+                            <interfaces/>
+                        </custom>
+                    </event>
+                    <event id="A18">
+                        <precondition message=""/>
+                        <custom>
+                            <visualization>
+                                <location xLoc="1280" yLoc="720"/>
+                                <colors bg="#f9f7ed" textStroke="#000000" stroke="#cccccc"/>
+                            </visualization>
+                            <roles>
+                                <role/>
+                            </roles>
+                            <readRoles>
+                                <readRole/>
+                            </readRoles>
+                            <groups>
+                                <group/>
+                            </groups>
+                            <phases>
+                                <phase/>
+                            </phases>
+                            <eventType/>
+                            <eventScope>private</eventScope>
+                            <eventTypeData/>
+                            <eventDescription/>
+                            <purpose/>
+                            <guide/>
+                            <insight use="false"/>
+                            <level>100</level>
+                            <sequence>17</sequence>
+                            <costs>0</costs>
+                            <eventData/>
+                            <interfaces/>
+                        </custom>
+                    </event>
+                </event>
+            </events>
+            <subProcesses/>
+            <distribution/>
+            <labels>
+                <label id="Cover expenses"/>
+                <label id="Do not cover"/>
+                <label id="Is child under 18"/>
+                <label id="Request"/>
+                <label id="Dækning af nødvendige merudgifter"/>
+                <label id="Law facts"/>
+                <label id=" merudgifterne er en konsekvens af den nedsatte funktionsevne"/>
+                <label id="lidelse og ikke kan dækkes efter andre bestemmelser i denne lov eller anden lovgivning"/>
+                <label id="Age"/>
+                <label id="Consequence of disability"/>
+                <label id="Not covered by other laws"/>
+                <label id="Significantant or permanent disability"/>
+                <label id="nedsat fysisk eller psykisk funktionsevne "/>
+                <label id="Add expenses"/>
+                <label id="Description"/>
+                <label id="Amount"/>
+                <label id="Expense item"/>
+                <label id="Resonable expenses"/>
+            </labels>
+            <labelMappings>
+                <labelMapping eventId="A1" labelId="Cover expenses"/>
+                <labelMapping eventId="A2" labelId="Do not cover"/>
+                <labelMapping eventId="A3" labelId="Is child under 18"/>
+                <labelMapping eventId="A4" labelId="Request"/>
+                <labelMapping eventId="A5" labelId="Dækning af nødvendige merudgifter"/>
+                <labelMapping eventId="A6" labelId="Law facts"/>
+                <labelMapping eventId="A7" labelId=" merudgifterne er en konsekvens af den nedsatte funktionsevne"/>
+                <labelMapping eventId="A8" labelId="lidelse og ikke kan dækkes efter andre bestemmelser i denne lov eller anden lovgivning"/>
+                <labelMapping eventId="A9" labelId="Age"/>
+                <labelMapping eventId="A10" labelId="Consequence of disability"/>
+                <labelMapping eventId="A11" labelId="Not covered by other laws"/>
+                <labelMapping eventId="A12" labelId="Significantant or permanent disability"/>
+                <labelMapping eventId="A13" labelId="nedsat fysisk eller psykisk funktionsevne "/>
+                <labelMapping eventId="A14" labelId="Add expenses"/>
+                <labelMapping eventId="A15" labelId="Description"/>
+                <labelMapping eventId="A16" labelId="Amount"/>
+                <labelMapping eventId="A17" labelId="Expense item"/>
+                <labelMapping eventId="A18" labelId="Resonable expenses"/>
+            </labelMappings>
+            <expressions/>
+            <variables/>
+            <variableAccesses>
+                <writeAccesses/>
+            </variableAccesses>
+            <custom>
+                <keywords/>
+                <roles>
+                    <role description="" specification="">Robot</role>
+                    <role description="" specification="">Case Management System</role>
+                    <role description="" specification="">Citizen Data</role>
+                    <role description="" specification="">Decision</role>
+                </roles>
+                <kpis/>
+                <groups/>
+                <phases/>
+                <eventTypes/>
+                <eventParameters/>
+                <graphDetails>DCR Graph covering:
+§ 86. Kommunalbestyrelsen skal yde dækning af nødvendige merudgifter ved forsørgelse i hjemmet af et barn eller en ung under 18 år med betydelig og varigt nedsat fysisk eller psykisk funktionsevne eller indgribende kronisk eller langvarig lidelse. Det er en betingelse, at merudgifterne er en konsekvens af den nedsatte funktionsevne eller lidelse og ikke kan dækkes efter andre bestemmelser i denne lov eller anden lovgivning.</graphDetails>
+                <graphLaw/>
+                <graphGuidelines/>
+                <graphDocumentation/>
+                <graphLanguage>en-US</graphLanguage>
+                <graphDomain>process</graphDomain>
+                <graphFilters>
+                    <filteredGroups/>
+                    <filteredRoles/>
+                    <filteredPhases/>
+                </graphFilters>
+                <hightlighterMarkup id="HLM"/>
+                <highlighterMarkup>
+                    <highlightLayers>
+                        <highlightLayer default="true" name="description">
+                            <![CDATA[DCR Process]]>
+                        </highlightLayer>
+                    </highlightLayers>
+                    <highlights/>
+                </highlighterMarkup>
+            </custom>
+        </resources>
+        <constraints>
+            <conditions>
+                <condition sourceId="A3" targetId="A5" filterLevel="100" description="" time="" groups=""/>
+                <condition sourceId="A4" targetId="A3" filterLevel="100" description="" time="" groups=""/>
+                <condition sourceId="A4" targetId="A6" filterLevel="100" description="" time="" groups=""/>
+                <condition sourceId="A6" targetId="A5" filterLevel="100" description="" time="" groups=""/>
+            </conditions>
+            <responses>
+                <response sourceId="A4" targetId="A5" filterLevel="100" description="" time="" groups=""/>
+                <response sourceId="A4" targetId="A6" filterLevel="100" description="" time="" groups=""/>
+                <response sourceId="A4" targetId="A3" filterLevel="100" description="" time="" groups=""/>
+            </responses>
+            <coresponses/>
+            <excludes/>
+            <includes>
+                <include sourceId="A14" targetId="A17" filterLevel="100" description="" time="" groups=""/>
+            </includes>
+            <milestones/>
+            <updates/>
+            <spawns/>
+            <templateSpawns/>
+        </constraints>
+    </specification>
+    <runtime>
+        <custom>
+            <globalMarking/>
+        </custom>
+        <marking>
+            <globalStore/>
+            <executed/>
+            <included>
+                <event id="A1"/>
+                <event id="A2"/>
+                <event id="A3"/>
+                <event id="A4"/>
+                <event id="A5"/>
+                <event id="A6"/>
+                <event id="A7"/>
+                <event id="A8"/>
+                <event id="A9"/>
+                <event id="A10"/>
+                <event id="A11"/>
+                <event id="A12"/>
+                <event id="A13"/>
+                <event id="A14"/>
+                <event id="A18"/>
+            </included>
+            <pendingResponses>
+                <event id="A7"/>
+                <event id="A8"/>
+                <event id="A9"/>
+                <event id="A10"/>
+                <event id="A11"/>
+                <event id="A12"/>
+                <event id="A13"/>
+                <event id="A14"/>
+                <event id="A15"/>
+                <event id="A16"/>
+                <event id="A18"/>
+            </pendingResponses>
+        </marking>
+    </runtime>
+</dcrgraph>

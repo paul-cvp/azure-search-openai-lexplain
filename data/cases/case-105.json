@@ -1,0 +1,32 @@
+{
+  "case_id": "CASE-2025-105",
+  "summary": "Forælder søger dækning af nødvendige merudgifter til barn med sjælden lidelse, men udgifterne kan dækkes af anden lovgivning.",
+  "decision": "Kommunen afviser ansøgningen, da udgifterne kan dækkes af anden lovgivning.",
+  "decision_outcome": "negativ",
+  "citations": {
+    "law": [
+      {
+        "id": "law86_5",
+        "paragraph": "§ 86",
+        "stk": [1],
+        "excerpt": "Det er en betingelse, at merudgifterne ikke kan dækkes efter andre bestemmelser i denne lov eller anden lovgivning."
+      }
+    ],
+    "guidelines": [
+      {
+        "id": "guidelines_4",
+        "paragraph": "4",
+        "law_id_reference": "law86_5",
+        "excerpt": "Ansøgeren skal dokumentere, at udgifterne ikke kan dækkes af anden lovgivning."
+      }
+    ]
+  },
+  "timeline": [
+    {"id": "evt-105-1", "label": "Is child under 18", "timestamp": "2025-05-01T08:00:00Z", "event": "Barnet er 10 år.", "law_paragraphs": ["law86_5"]},
+    {"id": "evt-105-2", "label": "Request", "timestamp": "2025-05-02T09:00:00Z", "event": "Ansøgning om dækning af merudgifter indsendt.", "law_paragraphs": ["law86_5"]},
+    {"id": "evt-105-3", "label": "Significant or permanent disability", "timestamp": "2025-05-03T10:00:00Z", "event": "Lægeerklæring dokumenterer sjælden lidelse.", "law_paragraphs": ["law86_5"]},
+    {"id": "evt-105-4", "label": "Not covered by other laws", "timestamp": "2025-05-04T11:00:00Z", "event": "Udgifterne kan dækkes af anden lovgivning.", "law_paragraphs": ["law86_5"]},
+    {"id": "evt-105-5", "label": "Law facts", "timestamp": "2025-05-05T12:00:00Z", "event": "Kommunen vurderer sagen ud fra § 86.", "law_paragraphs": ["law86_5"]},
+    {"id": "evt-105-6", "label": "Do not cover", "timestamp": "2025-05-06T13:00:00Z", "event": "Afgørelse: Dækning af nødvendige merudgifter afvises, da udgifterne kan dækkes af anden lovgivning.", "law_paragraphs": ["law86_5"]}
+  ]
+}

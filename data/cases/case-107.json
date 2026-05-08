@@ -1,0 +1,31 @@
+{
+  "case_id": "CASE-2025-107",
+  "summary": "Forælder søger tabt arbejdsfortjeneste under hospitalsophold for barn anbragt uden for hjemmet.",
+  "decision": "Kommunen bevilger tabt arbejdsfortjeneste under hospitalsopholdet.",
+  "decision_outcome": "positiv",
+  "citations": {
+    "law": [
+      {
+        "id": "law87_7",
+        "paragraph": "§ 87",
+        "stk": [2],
+        "excerpt": "Kravet om, at barnet skal være forsørget i hjemmet, gælder ikke ved hospitalsbesøg for anbragte børn, hvis forældrenes tilstedeværelse er nødvendig."
+      }
+    ],
+    "guidelines": [
+      {
+        "id": "guidelines_4",
+        "paragraph": "4",
+        "law_id_reference": "law87_7",
+        "excerpt": "Ansøgeren skal dokumentere nødvendigheden af tilstedeværelse under hospitalsophold."
+      }
+    ]
+  },
+  "timeline": [
+    {"id": "evt-107-1", "label": "Is child under 18", "timestamp": "2025-07-01T08:00:00Z", "event": "Barnet er 13 år.", "law_paragraphs": ["law87_7"]},
+    {"id": "evt-107-2", "label": "Request", "timestamp": "2025-07-02T09:00:00Z", "event": "Ansøgning om tabt arbejdsfortjeneste under hospitalsophold indsendt.", "law_paragraphs": ["law87_7"]},
+    {"id": "evt-107-3", "label": "Significant or permanent disability", "timestamp": "2025-07-03T10:00:00Z", "event": "Lægeerklæring dokumenterer behov for forældres tilstedeværelse.", "law_paragraphs": ["law87_7"]},
+    {"id": "evt-107-4", "label": "Law facts", "timestamp": "2025-07-04T11:00:00Z", "event": "Kommunen vurderer sagen ud fra § 87, stk. 2.", "law_paragraphs": ["law87_7"]},
+    {"id": "evt-107-5", "label": "Dækning af nødvendige merudgifter", "timestamp": "2025-07-05T12:00:00Z", "event": "Afgørelse: Tabt arbejdsfortjeneste bevilges under hospitalsopholdet.", "law_paragraphs": ["law87_7"]}
+  ]
+}

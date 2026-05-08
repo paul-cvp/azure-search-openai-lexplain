@@ -1,0 +1,23 @@
+{
+  "case_id": "CASE-2025-205",
+  "summary": "Forælder søger dækning af nødvendige merudgifter, men udgifterne kan dækkes af anden lovgivning.",
+  "decision": "Kommunen afviser ansøgningen, da udgifterne kan dækkes af anden lovgivning.",
+  "decision_outcome": "negativ",
+  "citations": {
+    "law": [
+      {"id": "law86_205", "paragraph": "§ 86", "stk": [1], "excerpt": "Det er en betingelse, at merudgifterne ikke kan dækkes efter andre bestemmelser i denne lov eller anden lovgivning."}
+    ]
+  },
+  "timeline": [
+    {"id": "evt-205-1", "label": "Is child under 18", "timestamp": "2025-12-11T08:00:00Z", "event": "Barnet er 8 år.", "law_paragraphs": ["law86_205"]},
+    {"id": "evt-205-2", "label": "Significant or permanent disability", "timestamp": "2025-12-12T09:00:00Z", "event": "Lægeerklæring dokumenterer varigt handicap.", "law_paragraphs": ["law86_205"]},
+    {"id": "evt-205-3", "label": "Not covered by other laws", "timestamp": "2025-12-13T10:00:00Z", "event": "Udgifterne kan dækkes af anden lovgivning.", "law_paragraphs": ["law86_205"]},
+    {"id": "evt-205-4", "label": "Consequence of disability", "timestamp": "2025-12-14T11:00:00Z", "event": "Merudgifterne er en konsekvens af barnets handicap.", "law_paragraphs": ["law86_205"]},
+    {"id": "evt-205-5", "label": "Add expenses", "timestamp": "2025-12-15T12:00:00Z", "event": "Forælder dokumenterer merudgifter.", "law_paragraphs": ["law86_205"]},
+    {"id": "evt-205-6", "label": "Expense", "timestamp": "2025-12-16T13:00:00Z", "event": "Udgifter til hjælpemidler og transport indsendt.", "law_paragraphs": ["law86_205"]},
+    {"id": "evt-205-7", "label": "Amount", "timestamp": "2025-12-17T14:00:00Z", "event": "Samlede merudgifter overstiger minimumsgrænsen.", "law_paragraphs": ["law86_205"]},
+    {"id": "evt-205-8", "label": "Description", "timestamp": "2025-12-18T15:00:00Z", "event": "Detaljeret beskrivelse af udgifter fremlagt.", "law_paragraphs": ["law86_205"]},
+    {"id": "evt-205-9", "label": "Law facts", "timestamp": "2025-12-19T16:00:00Z", "event": "Kommunen vurderer sagen ud fra § 86.", "law_paragraphs": ["law86_205"]},
+    {"id": "evt-205-10", "label": "Do not cover", "timestamp": "2025-12-20T17:00:00Z", "event": "Afgørelse: Dækning af nødvendige merudgifter afvises, da udgifterne kan dækkes af anden lovgivning.", "law_paragraphs": ["law86_205"]}
+  ]
+}

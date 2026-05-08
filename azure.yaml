@@ -16,30 +16,53 @@ services:
     # Please check docs/azure_app_service.md for more information on how to deploy to Azure App Service
     # host: appservice
     hooks:
-      # This hook is called when App Service is the host
       prepackage:
         windows:
           shell: pwsh
-          run:  cd ../frontend;npm install;npm run build
+          run: cd ../frontend;yarn install;
           interactive: false
           continueOnError: false
         posix:
           shell: sh
-          run:  cd ../frontend;npm install;npm run build
+          run: cd ../frontend;yarn install;
           interactive: false
           continueOnError: false
       # This hook is called when Azure Container Apps is the host
       prebuild:
         windows:
           shell: pwsh
-          run:  cd ../frontend;npm install;npm run build
+          run: cd ../frontend;yarn install;
           interactive: false
           continueOnError: false
         posix:
           shell: sh
-          run:  cd ../frontend;npm install;npm run build
+          run: cd ../frontend;yarn install;
           interactive: false
           continueOnError: false
+      # This hook is called when App Service is the host
+      # prepackage:
+      #   windows:
+      #     shell: pwsh
+      #     run:  cd ../frontend;npm install;npm run build
+      #     interactive: false
+      #     continueOnError: false
+      #   posix:
+      #     shell: sh
+      #     run:  cd ../frontend;npm install;npm run build
+      #     interactive: false
+      #     continueOnError: false
+      # # This hook is called when Azure Container Apps is the host
+      # prebuild:
+      #   windows:
+      #     shell: pwsh
+      #     run:  cd ../frontend;npm install;npm run build
+      #     interactive: false
+      #     continueOnError: false
+      #   posix:
+      #     shell: sh
+      #     run:  cd ../frontend;npm install;npm run build
+      #     interactive: false
+      #     continueOnError: false
   # Un-comment this section if using USE_CLOUD_INGESTION option
   # document-extractor:
   #   project: ./app/functions/document_extractor
@@ -72,36 +95,36 @@ services:
   #       interactive: false
   #       continueOnError: false
 hooks:
-    preprovision:
-      windows:
-        shell: pwsh
-        run: ./scripts/auth_init.ps1
-        interactive: true
-        continueOnError: false
-      posix:
-        shell: sh
-        run: ./scripts/auth_init.sh
-        interactive: true
-        continueOnError: false
-    postprovision:
-      windows:
-        shell: pwsh
-        run: ./scripts/auth_update.ps1;./scripts/prepdocs.ps1
-        interactive: true
-        continueOnError: false
-      posix:
-        shell: sh
-        run: ./scripts/auth_update.sh;./scripts/prepdocs.sh
-        interactive: true
-        continueOnError: false
-    postdeploy:
-      windows:
-        shell: pwsh
-        run: ./scripts/setup_cloud_ingestion.ps1
-        interactive: true
-        continueOnError: false
-      posix:
-        shell: sh
-        run: ./scripts/setup_cloud_ingestion.sh
-        interactive: true
-        continueOnError: false
+  preprovision:
+    windows:
+      shell: pwsh
+      run: ./scripts/auth_init.ps1
+      interactive: true
+      continueOnError: false
+    posix:
+      shell: sh
+      run: ./scripts/auth_init.sh
+      interactive: true
+      continueOnError: false
+  postprovision:
+    windows:
+      shell: pwsh
+      run: ./scripts/auth_update.ps1;./scripts/prepdocs.ps1
+      interactive: true
+      continueOnError: false
+    posix:
+      shell: sh
+      run: ./scripts/auth_update.sh;./scripts/prepdocs.sh
+      interactive: true
+      continueOnError: false
+  postdeploy:
+    windows:
+      shell: pwsh
+      run: ./scripts/setup_cloud_ingestion.ps1
+      interactive: true
+      continueOnError: false
+    posix:
+      shell: sh
+      run: ./scripts/setup_cloud_ingestion.sh
+      interactive: true
+      continueOnError: false

@@ -1,0 +1,38 @@
+{
+  "case_id": "CASE-2025-110",
+  "summary": "Forælder søger dækning af nødvendige merudgifter og tabt arbejdsfortjeneste, men kommunen vurderer, at forældres tilstedeværelse ikke er nødvendig.",
+  "decision": "Kommunen afviser tabt arbejdsfortjeneste, men bevilger merudgifter.",
+  "decision_outcome": "delvis",
+  "citations": {
+    "law": [
+      {
+        "id": "law86_10",
+        "paragraph": "§ 86",
+        "stk": [1, 2, 3],
+        "excerpt": "Kommunalbestyrelsen skal yde dækning af nødvendige merudgifter ved forsørgelse i hjemmet af et barn under 18 år med betydelig og varigt nedsat fysisk eller psykisk funktionsevne."
+      },
+      {
+        "id": "law87_10",
+        "paragraph": "§ 87",
+        "stk": [1],
+        "excerpt": "Tabt arbejdsfortjeneste ydes kun, hvis det er mest hensigtsmæssigt, at forælderen passer barnet i hjemmet."
+      }
+    ],
+    "guidelines": [
+      {
+        "id": "guidelines_4",
+        "paragraph": "4",
+        "law_id_reference": "law86_10",
+        "excerpt": "Ansøgeren skal dokumentere behovet for forældres tilstedeværelse og merudgifter."
+      }
+    ]
+  },
+  "timeline": [
+    {"id": "evt-110-1", "label": "Is child under 18", "timestamp": "2025-10-01T08:00:00Z", "event": "Barnet er 14 år.", "law_paragraphs": ["law86_10","law87_10"]},
+    {"id": "evt-110-2", "label": "Request", "timestamp": "2025-10-02T09:00:00Z", "event": "Ansøgning om dækning af merudgifter og tabt arbejdsfortjeneste indsendt.", "law_paragraphs": ["law86_10","law87_10"]},
+    {"id": "evt-110-3", "label": "Significant or permanent disability", "timestamp": "2025-10-03T10:00:00Z", "event": "Lægeerklæring dokumenterer varigt handicap.", "law_paragraphs": ["law86_10","law87_10"]},
+    {"id": "evt-110-4", "label": "Add expenses", "timestamp": "2025-10-04T11:00:00Z", "event": "Forælder opgør og dokumenterer merudgifter og tabt arbejdsfortjeneste.", "law_paragraphs": ["law86_10","law87_10"]},
+    {"id": "evt-110-5", "label": "Law facts", "timestamp": "2025-10-05T12:00:00Z", "event": "Kommunen vurderer, at forældres tilstedeværelse ikke er nødvendig.", "law_paragraphs": ["law87_10"]},
+    {"id": "evt-110-6", "label": "Dækning af nødvendige merudgifter", "timestamp": "2025-10-06T13:00:00Z", "event": "Afgørelse: Merudgifter bevilges, tabt arbejdsfortjeneste afvises.", "law_paragraphs": ["law86_10","law87_10"]}
+  ]
+}

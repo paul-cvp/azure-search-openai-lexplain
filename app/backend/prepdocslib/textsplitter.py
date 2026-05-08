@@ -23,7 +23,6 @@ class TextSplitter(ABC):
         if False:  # pragma: no cover - this is necessary for mypy to type check
             yield
 
-
 ENCODING_MODEL = "text-embedding-ada-002"
 
 STANDARD_WORD_BREAKS = [",", ";", ":", " ", "(", ")", "[", "]", "{", "}", "\t", "\n"]
@@ -582,6 +581,16 @@ class SentenceTextSplitter(TextSplitter):
         if previous_chunk:
             yield previous_chunk
 
+class XmlSplitter(TextSplitter):
+    """
+    Splits a list of pages into smaller chunks.
+    :param pages: The pages to split
+    :return: A generator of Chunk
+    """
+
+    def split_pages(self, pages: list[Page]) -> Generator[Chunk, None, None]:
+        all_text = "".join(page.text for page in pages)
+        yield Chunk(page_num=0, text=all_text)
 
 class SimpleTextSplitter(TextSplitter):
     """

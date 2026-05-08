@@ -1,0 +1,31 @@
+{
+  "case_id": "CASE-2025-108",
+  "summary": "Forælder søger dækning af nødvendige merudgifter til barn med indgribende kronisk lidelse, men kommunen kræver yderligere dokumentation.",
+  "decision": "Kommunen anmoder om yderligere dokumentation før afgørelse.",
+  "decision_outcome": "afventer",
+  "citations": {
+    "law": [
+      {
+        "id": "law86_8",
+        "paragraph": "§ 86",
+        "stk": [1],
+        "excerpt": "Kommunalbestyrelsen skal yde dækning af nødvendige merudgifter ved forsørgelse i hjemmet af et barn med indgribende kronisk lidelse."
+      }
+    ],
+    "guidelines": [
+      {
+        "id": "guidelines_4",
+        "paragraph": "4",
+        "law_id_reference": "law86_8",
+        "excerpt": "Ansøgeren skal fremlægge dokumentation for merudgifter, herunder lægeerklæring og opgørelse over udgifter."
+      }
+    ]
+  },
+  "timeline": [
+    {"id": "evt-108-1", "label": "Is child under 18", "timestamp": "2025-08-01T08:00:00Z", "event": "Barnet er 11 år.", "law_paragraphs": ["law86_8"]},
+    {"id": "evt-108-2", "label": "Request", "timestamp": "2025-08-02T09:00:00Z", "event": "Ansøgning om dækning af merudgifter indsendt.", "law_paragraphs": ["law86_8"]},
+    {"id": "evt-108-3", "label": "Significant or permanent disability", "timestamp": "2025-08-03T10:00:00Z", "event": "Lægeerklæring dokumenterer indgribende kronisk lidelse.", "law_paragraphs": ["law86_8"]},
+    {"id": "evt-108-4", "label": "Add expenses", "timestamp": "2025-08-04T11:00:00Z", "event": "Forælder opgør og dokumenterer merudgifter.", "law_paragraphs": ["law86_8"]},
+    {"id": "evt-108-5", "label": "Law facts", "timestamp": "2025-08-05T12:00:00Z", "event": "Kommunen anmoder om yderligere dokumentation.", "law_paragraphs": ["law86_8"]}
+  ]
+}

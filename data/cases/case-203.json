@@ -1,0 +1,23 @@
+{
+  "case_id": "CASE-2025-203",
+  "summary": "Forælder søger dækning af nødvendige merudgifter til barn med varigt psykisk handicap. Alle krav opfyldt.",
+  "decision": "Kommunen bevilger dækning af merudgifter.",
+  "decision_outcome": "positiv",
+  "citations": {
+    "law": [
+      {"id": "law86_203", "paragraph": "§ 86", "stk": [1], "excerpt": "Kommunalbestyrelsen skal yde dækning af nødvendige merudgifter ved forsørgelse i hjemmet af et barn under 18 år med betydelig og varigt nedsat psykisk funktionsevne."}
+    ]
+  },
+  "timeline": [
+    {"id": "evt-203-1", "label": "Is child under 18", "timestamp": "2025-11-21T08:00:00Z", "event": "Barnet er 12 år.", "law_paragraphs": ["law86_203"]},
+    {"id": "evt-203-2", "label": "Significant or permanent disability", "timestamp": "2025-11-22T09:00:00Z", "event": "Lægeerklæring dokumenterer varigt psykisk handicap.", "law_paragraphs": ["law86_203"]},
+    {"id": "evt-203-3", "label": "Not covered by other laws", "timestamp": "2025-11-23T10:00:00Z", "event": "Udgifterne kan ikke dækkes af andre bestemmelser.", "law_paragraphs": ["law86_203"]},
+    {"id": "evt-203-4", "label": "Consequence of disability", "timestamp": "2025-11-24T11:00:00Z", "event": "Merudgifterne er en konsekvens af barnets handicap.", "law_paragraphs": ["law86_203"]},
+    {"id": "evt-203-5", "label": "Add expenses", "timestamp": "2025-11-25T12:00:00Z", "event": "Forælder dokumenterer merudgifter.", "law_paragraphs": ["law86_203"]},
+    {"id": "evt-203-6", "label": "Expense", "timestamp": "2025-11-26T13:00:00Z", "event": "Udgifter til specialpædagogisk støtte og transport indsendt.", "law_paragraphs": ["law86_203"]},
+    {"id": "evt-203-7", "label": "Amount", "timestamp": "2025-11-27T14:00:00Z", "event": "Samlede merudgifter overstiger minimumsgrænsen.", "law_paragraphs": ["law86_203"]},
+    {"id": "evt-203-8", "label": "Description", "timestamp": "2025-11-28T15:00:00Z", "event": "Detaljeret beskrivelse af udgifter fremlagt.", "law_paragraphs": ["law86_203"]},
+    {"id": "evt-203-9", "label": "Law facts", "timestamp": "2025-11-29T16:00:00Z", "event": "Kommunen vurderer sagen ud fra § 86.", "law_paragraphs": ["law86_203"]},
+    {"id": "evt-203-10", "label": "Cover expenses", "timestamp": "2025-11-30T17:00:00Z", "event": "Afgørelse: Dækning af nødvendige merudgifter bevilges.", "law_paragraphs": ["law86_203"]}
+  ]
+}

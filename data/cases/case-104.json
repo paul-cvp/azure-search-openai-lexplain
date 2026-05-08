@@ -1,0 +1,31 @@
+{
+  "case_id": "CASE-2025-104",
+  "summary": "Forælder søger tabt arbejdsfortjeneste, men barnet er over 18 år.",
+  "decision": "Kommunen afviser ansøgningen, da barnet er over 18 år.",
+  "decision_outcome": "negativ",
+  "citations": {
+    "law": [
+      {
+        "id": "law87_4",
+        "paragraph": "§ 87",
+        "stk": [1],
+        "excerpt": "Kommunalbestyrelsen skal yde hjælp til dækning af tabt arbejdsfortjeneste til personer, der i hjemmet forsørger et barn under 18 år med betydelig og varigt nedsat fysisk eller psykisk funktionsevne."
+      }
+    ],
+    "guidelines": [
+      {
+        "id": "guidelines_4",
+        "paragraph": "4",
+        "law_id_reference": "law87_4",
+        "excerpt": "Ansøgeren skal dokumentere barnets alder og funktionsnedsættelse."
+      }
+    ]
+  },
+  "timeline": [
+    {"id": "evt-104-1", "label": "Is child under 18", "timestamp": "2025-04-01T08:00:00Z", "event": "Barnet er 19 år.", "law_paragraphs": ["law87_4"]},
+    {"id": "evt-104-2", "label": "Request", "timestamp": "2025-04-02T09:00:00Z", "event": "Ansøgning om tabt arbejdsfortjeneste indsendt.", "law_paragraphs": ["law87_4"]},
+    {"id": "evt-104-3", "label": "Significant or permanent disability", "timestamp": "2025-04-03T10:00:00Z", "event": "Lægeerklæring dokumenterer varigt handicap.", "law_paragraphs": ["law87_4"]},
+    {"id": "evt-104-4", "label": "Law facts", "timestamp": "2025-04-04T11:00:00Z", "event": "Kommunen vurderer sagen ud fra § 87.", "law_paragraphs": ["law87_4"]},
+    {"id": "evt-104-5", "label": "Do not cover", "timestamp": "2025-04-05T12:00:00Z", "event": "Afgørelse: Tabt arbejdsfortjeneste afvises, da barnet er over 18 år.", "law_paragraphs": ["law87_4"]}
+  ]
+}

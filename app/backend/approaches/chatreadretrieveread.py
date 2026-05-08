@@ -24,6 +24,82 @@ from approaches.promptmanager import PromptManager
 from prepdocslib.blobmanager import AdlsBlobManager, BlobManager
 from prepdocslib.embeddings import ImageEmbeddings
 
+from lxml import etree
+
+from pm4py.objects.dcr.utils.utils import nested_groups_and_sps_to_flat_dcr as flatten_dcr
+from pm4py.objects.dcr.semantics import DcrSemantics
+from pm4py.objects.dcr.importer import importer as dcr_importer
+
+class LawLLM():
+    def __init__(self):
+        pass
+
+    def call(message:str):
+        answer = ""
+        return answer
+    
+class DocumentingLLM():
+    def __init__(self):
+        pass
+
+    def call(message:str):
+        answer = ""
+        return answer
+
+class SimilarCasesLLM():
+    def __init__(self):
+        pass
+
+    def call(message:str):
+        answer = ""
+        return answer
+
+class DcrLLM():
+    '''Orchestrating LLM'''
+    def __init__(self):
+        pass
+
+    def call(message:str):
+        answer = ""
+        return answer
+
+def remove_last_line(s: str) -> str:
+    lines = s.splitlines()
+    return "\n".join(lines[:-1]) if len(lines) > 1 else ""
+
+def starts_xml(text: str) -> bool:
+    return text.startswith('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>')
+
+def is_xml_parsing(text: str) -> bool:
+    try:
+        etree.fromstring(text.encode())
+        return True
+    except etree.XMLSyntaxError:
+        return False
+
+simple_decision_events = {'Is child under 18': lambda x : x < 18}
+
+llm_decision_events = {
+    'Resonable expenses': SimilarCasesLLM,
+    'merudgifterne er en konsekvens af den nedsatte funktionsevne': SimilarCasesLLM,
+    'lidelse og ikke kan dækkes efter andre bestemmelser i denne lov eller anden lovgivning': LawLLM,
+    'nedsat fysisk eller psykisk funktionsevne': SimilarCasesLLM,
+}
+
+llm_case_summary_events = {
+    'Cover expenses': DocumentingLLM,
+    'Do not cover': DocumentingLLM,
+}
+
+# data_request_events = {
+#     'Add expenses': 'Please add the expense Amount and Description.', 
+#     'Consequence of disability': 'Please document the consequence of disability', 
+#     'Age': 'Please add your age',  
+#     'Not covered by other laws': 'Have you requested expenses that are covered by other laws?', 
+#     'Significant or permanent disability': 'Please document whether you have a significant or permanent disability.'
+# }
+
+from quart import current_app
 
 class ChatReadRetrieveReadApproach(Approach):
     """
@@ -31,6 +107,7 @@ class ChatReadRetrieveReadApproach(Approach):
     then uses Azure AI Search to retrieve relevant documents, and then sends the conversation history,
     original user question, and search results to OpenAI to generate a response.
     """
+
 
     NO_RESPONSE = Approach.QUERY_REWRITE_NO_RESPONSE
 
@@ -100,6 +177,12 @@ class ChatReadRetrieveReadApproach(Approach):
         self.use_sharepoint_source = use_sharepoint_source
         self.retrieval_reasoning_effort = retrieval_reasoning_effort
 
+        self.dcr_graph = None
+        self.semantics = None
+        self.enabled_events = set()
+        self.citizen_data = {}
+        self.event_role_mapping = {}
+
     def extract_followup_questions(self, content: Optional[str]):
         if content is None:
             return content, []
@@ -112,6 +195,53 @@ class ChatReadRetrieveReadApproach(Approach):
         except Exception:
             return default_query
 
+    async def execute_dcr_event(self, event):
+        self.dcr_graph = self.semantics.execute(self.dcr_graph, event)
+        is_graph_accepting = self.semantics.is_accepting(self.dcr_graph)
+        self.enabled_events = self.semantics.enabled(self.dcr_graph)
+        content = f"enabled: {self.enabled_events} \n\n pending: {self.dcr_graph.marking.pending} \n\n accepting: {is_graph_accepting}"
+        return content
+
+    async def get_event_requirements(self, event):
+        role_for_event = self.event_role_mapping[event]
+
+        if role_for_event == 'Citizen Data':
+            #here I have to collect data from the citizen by asking questions 
+            # and recording the answer in citizen data
+            pass
+        elif role_for_event in ['Robot','Case Management System', 'Decision']:
+            if event in simple_decision_events.keys():
+                #these execute by inspecting the existing data or
+                #if the data is not found then it is requested from the user
+                pass
+            elif event in llm_decision_events.keys():
+                #these require a search in the documents llm. or
+                #these require a retrieval of historical cases llm
+                clarifying_prompt  = f"""Given this event {event}, this data {self.citizen_data} and this dcr graph {self.dcr_graph}. 
+                Does the data allow you to execute the event? 
+                Answer yes/no only!"""
+                answer_interpreted = self.run_just_llm(clarifying_prompt)
+                pass
+            elif event in llm_case_summary_events.keys():
+                #these require a case summary llm
+                pass
+
+    async def parse_dcr_from_answer(self,content):
+        answer = content
+        while not is_xml_parsing(answer):
+            answer = remove_last_line(answer)
+
+        self.dcr_graph = flatten_dcr(dcr_importer.deserialize(answer))
+        self.semantics = DcrSemantics()
+        self.enabled_events = self.semantics.enabled(self.dcr_graph)
+        is_graph_accepting = self.semantics.is_accepting(self.dcr_graph)
+        content = f"enabled: {self.enabled_events} \n\n pending: {self.dcr_graph.marking.pending} \n\n accepting: {is_graph_accepting}"
+        
+        original_dict = self.dcr_graph.role_assignments
+        self.event_role_mapping = {value: key for key, value_set in original_dict.items() for value in value_set}
+
+        return content
+
     async def run_without_streaming(
         self,
         messages: list[ChatCompletionMessageParam],
@@ -119,31 +249,166 @@ class ChatReadRetrieveReadApproach(Approach):
         auth_claims: dict[str, Any],
         session_state: Any = None,
     ) -> dict[str, Any]:
-        extra_info, chat_coroutine = await self.run_until_final_call(
-            messages, overrides, auth_claims, should_stream=False
-        )
-        chat_completion_response: ChatCompletion = await cast(Awaitable[ChatCompletion], chat_coroutine)
-        content = chat_completion_response.choices[0].message.content
-        role = chat_completion_response.choices[0].message.role
-        if overrides.get("suggest_followup_questions"):
-            content, followup_questions = self.extract_followup_questions(content)
-            extra_info.followup_questions = followup_questions
-        # Assume last thought is for generating answer
-        # TODO: Update for agentic? This isn't still true?
-        if self.include_token_usage and extra_info.thoughts and chat_completion_response.usage:
-            extra_info.thoughts[-1].update_token_usage(chat_completion_response.usage)
-        chat_app_response = {
-            "message": {"content": content, "role": role},
-            "context": {
-                "thoughts": extra_info.thoughts,
-                "data_points": {
-                    key: value for key, value in asdict(extra_info.data_points).items() if value is not None
+                
+        original_user_query = messages[-1]["content"]
+        # previous_agent_question = ""
+        # if len(messages)>1:
+        #     previous_agent_question = messages[-2]["content"]
+
+        # if previous_agent_question == "What is the child's age?":
+        #     # current_app.logger.info(original_user_query)
+        #     # initial_prompt = f"""
+        #     # If there is a number here: {original_user_query} extract that number and only return the number! 
+        #     # Otherwise return -1"""
+        #     # chat_app_response = await self.run_just_llm(initial_prompt,messages)
+        #     age = int(original_user_query)
+        #     self.citizen_data['Age'] = age
+
+        if self.dcr_graph and isinstance(original_user_query, str) and original_user_query in self.dcr_graph.events:
+            # This handles the DCR related answers
+            event = original_user_query
+
+        #     role_for_event = self.event_role_mapping[event]
+        #     if event == 'Age':
+        #         chat_app_response = {
+        #             "message": {"content": "What is the child's age?", "role": "agent"},
+        #             "context": {
+        #                 "thoughts": [],
+        #                 "data_points": {},
+        #                 "followup_questions": list(self.enabled_events),
+        #             },
+        #             "session_state": session_state,
+        #         }
+        #         return chat_app_response
+        #     elif event == 'Is child under 18':
+        #         result = simple_decision_events[event](self.citizen_data['Age'])
+        #         current_app.logger.info(result)
+        #         initial_prompt = f"""
+        #         User was asked: {event}? Answer was: {result}
+        #         Can the user proceed?
+        #         """
+        #         chat_app_response = await self.run_just_llm(initial_prompt)
+        #         return chat_app_response
+        #     elif role_for_event == 'Citizen Data' and event not in self.citizen_data:
+        #         initial_prompt = event
+        #         initial_prompt = f"""
+        #         Ask the user to provide the data or documentation about this event: '{initial_prompt}'.
+        #         Make it into a precise question that can be answered by the user!
+        #         For example if the event is Age say: What is the childs age?
+        #         """
+        #         chat_app_response = await self.run_just_llm(initial_prompt)
+        #         current_app.logger.info(chat_app_response)
+        #         chat_app_response["context"]["followup_questions"] = list(self.enabled_events)
+        #         return chat_app_response
+        #     else:
+        #         self.get_event_requirements(event)
+            content = await self.execute_dcr_event(event)
+            chat_app_response = {
+                "message": {"content": content, "role": "agent"},
+                "context": {
+                    "thoughts": [],
+                    "data_points": {},
+                    "followup_questions": list(self.enabled_events),
                 },
-                "followup_questions": extra_info.followup_questions,
+                "session_state": session_state,
+            }
+            return chat_app_response
+
+        else:
+            # this handles the non dcr events answers!
+            extra_info, chat_coroutine = await self.run_until_final_call(
+                messages, overrides, auth_claims, should_stream=False
+            )
+            chat_completion_response: ChatCompletion = await cast(Awaitable[ChatCompletion], chat_coroutine)
+            content = chat_completion_response.choices[0].message.content
+            role = chat_completion_response.choices[0].message.role
+
+            if starts_xml(content):
+                # If the LLM returns a dcr graph then parse it and start dcr execution
+                content = await self.parse_dcr_from_answer(content)
+
+                if overrides.get("suggest_followup_questions"):
+                    extra_info.followup_questions = list(self.enabled_events)
+            else:
+                # these are the normal ansers
+                dcr_trigger = "Return the dcr graph .xml file for this paragraph!"
+                if content == dcr_trigger:
+                    dcr_trigger += " Return only the .xml content!!!!"
+
+                if overrides.get("suggest_followup_questions"):
+                    content, followup_questions = self.extract_followup_questions(content)
+                    followup_questions.append(dcr_trigger)
+                    followup_questions.append(list(self.enabled_events))
+                    extra_info.followup_questions = followup_questions
+
+            # Assume last thought is for generating answer
+            # TODO: Update for agentic? This isn't still true?
+            if self.include_token_usage and extra_info.thoughts and chat_completion_response.usage:
+                extra_info.thoughts[-1].update_token_usage(chat_completion_response.usage)
+            chat_app_response = {
+                "message": {"content": content, "role": role},
+                "context": {
+                    "thoughts": extra_info.thoughts,
+                    "data_points": {
+                        key: value for key, value in asdict(extra_info.data_points).items() if value is not None
+                    },
+                    "followup_questions": extra_info.followup_questions,
+                },
+                "session_state": session_state,
+            }
+            return chat_app_response
+
+    async def run_just_llm(
+        self,
+        message,
+        past_messages: Any = None, 
+        session_state: Any = None,
+        context: dict[str, Any] = {},
+    ) -> dict[str, Any]:
+        overrides = context.get("overrides", {})
+        auth_claims = context.get("auth_claims", {})
+        q = message
+        if not isinstance(q, str):
+            raise ValueError("The most recent message content must be a string.")
+
+        else:
+            current_app.logger.info(past_messages)
+            # Process results
+            messages = self.prompt_manager.render_prompt(
+                self.prompt_manager.load_prompt("basic.prompty"),
+                {
+                    "user_query": q,
+                    "past_messages": past_messages,
+                    "text_sources": "",
+                    "image_sources": [],
+                    "citations": [],
+                },
+            )
+
+            chat_completion = cast(
+                ChatCompletion,
+                await self.create_chat_completion(
+                    self.chatgpt_deployment,
+                    self.chatgpt_model,
+                    messages=messages,
+                    overrides=overrides,
+                    response_token_limit=self.get_response_token_limit(self.chatgpt_model, 1024),
+                ),
+            )
+
+            answer = chat_completion.choices[0].message.content or ""
+
+        return {
+            "message": {
+                "content": answer,
+                "role": "assistant",
+            },
+            "context": {
+                "thoughts": [],
+                "data_points": {},
             },
             "session_state": session_state,
         }
-        return chat_app_response
 
     async def run_with_streaming(
         self,
@@ -152,6 +417,7 @@ class ChatReadRetrieveReadApproach(Approach):
         auth_claims: dict[str, Any],
         session_state: Any = None,
     ) -> AsyncGenerator[dict, None]:
+        
         extra_info, chat_coroutine = await self.run_until_final_call(
             messages, overrides, auth_claims, should_stream=True
         )

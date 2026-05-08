@@ -1,0 +1,23 @@
+{
+  "case_id": "CASE-2025-204",
+  "summary": "Forælder søger dækning af nødvendige merudgifter, men barnet er over 18 år.",
+  "decision": "Kommunen afviser ansøgningen, da barnet er over 18 år.",
+  "decision_outcome": "negativ",
+  "citations": {
+    "law": [
+      {"id": "law86_204", "paragraph": "§ 86", "stk": [1], "excerpt": "Dækning af nødvendige merudgifter forudsætter, at barnet er under 18 år."}
+    ]
+  },
+  "timeline": [
+    {"id": "evt-204-1", "label": "Is child under 18", "timestamp": "2025-12-01T08:00:00Z", "event": "Barnet er 19 år.", "law_paragraphs": ["law86_204"]},
+    {"id": "evt-204-2", "label": "Significant or permanent disability", "timestamp": "2025-12-02T09:00:00Z", "event": "Lægeerklæring dokumenterer varigt handicap.", "law_paragraphs": ["law86_204"]},
+    {"id": "evt-204-3", "label": "Not covered by other laws", "timestamp": "2025-12-03T10:00:00Z", "event": "Udgifterne kan ikke dækkes af andre bestemmelser.", "law_paragraphs": ["law86_204"]},
+    {"id": "evt-204-4", "label": "Consequence of disability", "timestamp": "2025-12-04T11:00:00Z", "event": "Merudgifterne er en konsekvens af barnets handicap.", "law_paragraphs": ["law86_204"]},
+    {"id": "evt-204-5", "label": "Add expenses", "timestamp": "2025-12-05T12:00:00Z", "event": "Forælder dokumenterer merudgifter.", "law_paragraphs": ["law86_204"]},
+    {"id": "evt-204-6", "label": "Expense", "timestamp": "2025-12-06T13:00:00Z", "event": "Udgifter til hjælpemidler og transport indsendt.", "law_paragraphs": ["law86_204"]},
+    {"id": "evt-204-7", "label": "Amount", "timestamp": "2025-12-07T14:00:00Z", "event": "Samlede merudgifter overstiger minimumsgrænsen.", "law_paragraphs": ["law86_204"]},
+    {"id": "evt-204-8", "label": "Description", "timestamp": "2025-12-08T15:00:00Z", "event": "Detaljeret beskrivelse af udgifter fremlagt.", "law_paragraphs": ["law86_204"]},
+    {"id": "evt-204-9", "label": "Law facts", "timestamp": "2025-12-09T16:00:00Z", "event": "Kommunen vurderer sagen ud fra § 86.", "law_paragraphs": ["law86_204"]},
+    {"id": "evt-204-10", "label": "Do not cover", "timestamp": "2025-12-10T17:00:00Z", "event": "Afgørelse: Dækning af nødvendige merudgifter afvises, da barnet er over 18 år.", "law_paragraphs": ["law86_204"]}
+  ]
+}

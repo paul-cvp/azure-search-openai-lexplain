@@ -1,0 +1,23 @@
+{
+  "case_id": "CASE-2025-206",
+  "summary": "Forælder søger dækning af nødvendige merudgifter, men merudgifterne er ikke en konsekvens af barnets handicap.",
+  "decision": "Kommunen afviser ansøgningen, da merudgifterne ikke er en konsekvens af funktionsnedsættelsen.",
+  "decision_outcome": "negativ",
+  "citations": {
+    "law": [
+      {"id": "law86_206", "paragraph": "§ 86", "stk": [1], "excerpt": "Det er en betingelse, at merudgifterne er en konsekvens af den nedsatte funktionsevne eller lidelse."}
+    ]
+  },
+  "timeline": [
+    {"id": "evt-206-1", "label": "Is child under 18", "timestamp": "2025-12-21T08:00:00Z", "event": "Barnet er 9 år.", "law_paragraphs": ["law86_206"]},
+    {"id": "evt-206-2", "label": "Significant or permanent disability", "timestamp": "2025-12-22T09:00:00Z", "event": "Lægeerklæring dokumenterer varigt handicap.", "law_paragraphs": ["law86_206"]},
+    {"id": "evt-206-3", "label": "Not covered by other laws", "timestamp": "2025-12-23T10:00:00Z", "event": "Udgifterne kan ikke dækkes af andre bestemmelser.", "law_paragraphs": ["law86_206"]},
+    {"id": "evt-206-4", "label": "Consequence of disability", "timestamp": "2025-12-24T11:00:00Z", "event": "Merudgifterne skyldes ikke barnets handicap.", "law_paragraphs": ["law86_206"]},
+    {"id": "evt-206-5", "label": "Add expenses", "timestamp": "2025-12-25T12:00:00Z", "event": "Forælder dokumenterer merudgifter.", "law_paragraphs": ["law86_206"]},
+    {"id": "evt-206-6", "label": "Expense", "timestamp": "2025-12-26T13:00:00Z", "event": "Udgifter til hjælpemidler og transport indsendt.", "law_paragraphs": ["law86_206"]},
+    {"id": "evt-206-7", "label": "Amount", "timestamp": "2025-12-27T14:00:00Z", "event": "Samlede merudgifter overstiger minimumsgrænsen.", "law_paragraphs": ["law86_206"]},
+    {"id": "evt-206-8", "label": "Description", "timestamp": "2025-12-28T15:00:00Z", "event": "Detaljeret beskrivelse af udgifter fremlagt.", "law_paragraphs": ["law86_206"]},
+    {"id": "evt-206-9", "label": "Law facts", "timestamp": "2025-12-29T16:00:00Z", "event": "Kommunen vurderer sagen ud fra § 86.", "law_paragraphs": ["law86_206"]},
+    {"id": "evt-206-10", "label": "Do not cover", "timestamp": "2025-12-30T17:00:00Z", "event": "Afgørelse: Dækning af nødvendige merudgifter afvises, da merudgifterne ikke er en konsekvens af funktionsnedsættelsen.", "law_paragraphs": ["law86_206"]}
+  ]
+}

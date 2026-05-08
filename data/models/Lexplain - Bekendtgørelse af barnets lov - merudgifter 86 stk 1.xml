@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<dcrgraph>
+  <specification>
+    <resources>
+      <events>
+        <event id="Event_155iiqh">
+          <custom>
+            <roles>
+              <role>Robot</role>
+            </roles>
+            <visualization>
+              <location xLoc="860" yLoc="120"/>
+              <size width="130" height="150"/>
+            </visualization>
+          </custom>
+        </event>
+        <event id="SubProcess_0paoug4" type="subprocess">
+          <custom>
+            <visualization>
+              <location xLoc="-40" yLoc="90"/>
+              <size width="750" height="570"/>
+            </visualization>
+          </custom>
+          <event id="Event_07k41iu">
+            <custom>
+              <roles>
+                <role>Citizen Data</role>
+              </roles>
+              <visualization>
+                <location xLoc="-10" yLoc="110"/>
+                <size width="130" height="150"/>
+              </visualization>
+            </custom>
+          </event>
+          <event id="Event_1w7eppn">
+            <custom>
+              <roles>
+                <role>Citizen Data</role>
+              </roles>
+              <visualization>
+                <location xLoc="160" yLoc="110"/>
+                <size width="130" height="150"/>
+              </visualization>
+            </custom>
+          </event>
+          <event id="Event_0muqobt">
+            <custom>
+              <roles>
+                <role>Citizen Data</role>
+              </roles>
+              <visualization>
+                <location xLoc="-10" yLoc="280"/>
+                <size width="130" height="150"/>
+              </visualization>
+            </custom>
+          </event>
+          <event id="Event_02o0kdm">
+            <custom>
+              <roles>
+                <role>Citizen Data</role>
+              </roles>
+              <visualization>
+                <location xLoc="160" yLoc="280"/>
+                <size width="130" height="150"/>
+              </visualization>
+            </custom>
+          </event>
+          <event id="Event_1kk6rx3">
+            <custom>
+              <roles>
+                <role>Citizen Data</role>
+              </roles>
+              <visualization>
+                <location xLoc="300" yLoc="260"/>
+                <size width="130" height="150"/>
+              </visualization>
+            </custom>
+          </event>
+          <event id="SubProcess_0y18arb" type="subprocess">
+            <custom>
+              <visualization>
+                <location xLoc="500" yLoc="140"/>
+                <size width="180" height="430"/>
+              </visualization>
+            </custom>
+            <event id="Event_19by3yr">
+              <custom>
+                <roles>
+                  <role>Citizen Data</role>
+                </roles>
+                <visualization>
+                  <location xLoc="530" yLoc="170"/>
+                  <size width="130" height="150"/>
+                </visualization>
+              </custom>
+            </event>
+            <event id="Event_007mziz">
+              <custom>
+                <roles>
+                  <role>Citizen Data</role>
+                </roles>
+                <visualization>
+                  <location xLoc="530" yLoc="350"/>
+                  <size width="130" height="150"/>
+                </visualization>
+              </custom>
+            </event>
+          </event>
+        </event>
+        <event id="SubProcess_15wylql" type="subprocess">
+          <custom>
+            <visualization>
+              <location xLoc="840" yLoc="440"/>
+              <size width="480" height="370"/>
+            </visualization>
+          </custom>
+          <event id="Event_1ye34j5">
+            <custom>
+              <roles>
+                <role>Case management system</role>
+              </roles>
+              <visualization>
+                <location xLoc="890" yLoc="470"/>
+                <size width="130" height="150"/>
+              </visualization>
+            </custom>
+          </event>
+          <event id="Event_1w4ri84">
+            <custom>
+              <roles>
+                <role>Case management system</role>
+              </roles>
+              <visualization>
+                <location xLoc="1119" yLoc="473"/>
+                <size width="130" height="150"/>
+              </visualization>
+            </custom>
+          </event>
+          <event id="Event_0jtcq6j">
+            <custom>
+              <roles>
+                <role>Case management system</role>
+              </roles>
+              <visualization>
+                <location xLoc="890" yLoc="640"/>
+                <size width="130" height="150"/>
+              </visualization>
+            </custom>
+          </event>
+          <event id="Event_0tnj04n">
+            <custom>
+              <roles>
+                <role>Case management system</role>
+              </roles>
+              <visualization>
+                <location xLoc="1110" yLoc="640"/>
+                <size width="130" height="150"/>
+              </visualization>
+            </custom>
+          </event>
+        </event>
+        <event id="SubProcess_07zyfqo" type="subprocess">
+          <custom>
+            <visualization>
+              <location xLoc="1250" yLoc="70"/>
+              <size width="400" height="280"/>
+            </visualization>
+          </custom>
+          <event id="Event_04um3ff">
+            <custom>
+              <visualization>
+                <location xLoc="1300" yLoc="130"/>
+                <size width="130" height="150"/>
+              </visualization>
+            </custom>
+          </event>
+          <event id="Event_0rp62gr">
+            <custom>
+              <visualization>
+                <location xLoc="1460" yLoc="130"/>
+                <size width="130" height="150"/>
+              </visualization>
+            </custom>
+          </event>
+        </event>
+      </events>
+      <subProcesses/>
+      <labels>
+        <label id="Is child under 18"/>
+        <label id="Request"/>
+        <label id="Age"/>
+        <label id="Significant or permanent disability"/>
+        <label id="Not covered by other laws"/>
+        <label id="Consequence of disability"/>
+        <label id="Add expenses"/>
+        <label id="Expense"/>
+        <label id="Amount"/>
+        <label id="Description"/>
+        <label id="Law facts"/>
+        <label id="merudgifterne er en konsekvens af den nedsatte funktionsevne"/>
+        <label id="nedsat fysisk eller psykisk funktionsevne"/>
+        <label id="lidelse og ikke kan dækkes efter andre bestemmelser i denne lov eller anden lovgivning"/>
+        <label id="Resonable expenses"/>
+        <label id="Dækning af nødvendige merudgifter"/>
+        <label id="Cover expenses"/>
+        <label id="Do not cover"/>
+      </labels>
+      <labelMappings>
+        <labelMapping eventId="Event_155iiqh" labelId="Is child under 18"/>
+        <labelMapping eventId="SubProcess_0paoug4" labelId="Request"/>
+        <labelMapping eventId="Event_07k41iu" labelId="Age"/>
+        <labelMapping eventId="Event_1w7eppn" labelId="Significant or permanent disability"/>
+        <labelMapping eventId="Event_0muqobt" labelId="Not covered by other laws"/>
+        <labelMapping eventId="Event_02o0kdm" labelId="Consequence of disability"/>
+        <labelMapping eventId="Event_1kk6rx3" labelId="Add expenses"/>
+        <labelMapping eventId="SubProcess_0y18arb" labelId="Expense"/>
+        <labelMapping eventId="Event_19by3yr" labelId="Amount"/>
+        <labelMapping eventId="Event_007mziz" labelId="Description"/>
+        <labelMapping eventId="SubProcess_15wylql" labelId="Law facts"/>
+        <labelMapping eventId="Event_1ye34j5" labelId="merudgifterne er en konsekvens af den nedsatte funktionsevne"/>
+        <labelMapping eventId="Event_1w4ri84" labelId="nedsat fysisk eller psykisk funktionsevne"/>
+        <labelMapping eventId="Event_0jtcq6j" labelId="lidelse og ikke kan dækkes efter andre bestemmelser i denne lov eller anden lovgivning"/>
+        <labelMapping eventId="Event_0tnj04n" labelId="Resonable expenses"/>
+        <labelMapping eventId="SubProcess_07zyfqo" labelId="Dækning af nødvendige merudgifter"/>
+        <labelMapping eventId="Event_04um3ff" labelId="Cover expenses"/>
+        <labelMapping eventId="Event_0rp62gr" labelId="Do not cover"/>
+      </labelMappings>
+      <variables/>
+      <expressions/>
+      <variableAccesses>
+        <readAccessess/>
+        <writeAccessess/>
+      </variableAccesses>
+    </resources>
+    <constraints>
+      <conditions>
+        <condition sourceId="SubProcess_0paoug4" targetId="Event_155iiqh">
+          <custom>
+            <waypoints>
+              <waypoint x="710" y="375"/>
+              <waypoint x="825" y="375"/>
+              <waypoint x="825" y="195"/>
+              <waypoint x="860" y="195"/>
+            </waypoints>
+            <id id="Relation_05acjel"/>
+          </custom>
+        </condition>
+        <condition sourceId="SubProcess_0paoug4" targetId="SubProcess_15wylql">
+          <custom>
+            <waypoints>
+              <waypoint x="710" y="375"/>
+              <waypoint x="815" y="375"/>
+              <waypoint x="815" y="540"/>
+              <waypoint x="840" y="540"/>
+            </waypoints>
+            <id id="Relation_0m7gvlj"/>
+          </custom>
+        </condition>
+        <condition sourceId="Event_155iiqh" targetId="SubProcess_07zyfqo">
+          <custom>
+            <waypoints>
+              <waypoint x="990" y="195"/>
+              <waypoint x="1120" y="195"/>
+              <waypoint x="1120" y="180"/>
+              <waypoint x="1250" y="180"/>
+            </waypoints>
+            <id id="Relation_0r8n5qr"/>
+          </custom>
+        </condition>
+        <condition sourceId="SubProcess_15wylql" targetId="SubProcess_07zyfqo">
+          <custom>
+            <waypoints>
+              <waypoint x="1080" y="440"/>
+              <waypoint x="1080" y="395"/>
+              <waypoint x="1330" y="395"/>
+              <waypoint x="1330" y="350"/>
+            </waypoints>
+            <id id="Relation_1nvwbdi"/>
+          </custom>
+        </condition>
+      </conditions>
+      <responses>
+        <response sourceId="SubProcess_0paoug4" targetId="Event_155iiqh">
+          <custom>
+            <waypoints>
+              <waypoint x="710" y="189"/>
+              <waypoint x="810" y="140"/>
+              <waypoint x="860" y="164"/>
+            </waypoints>
+            <id id="Relation_14epm8l"/>
+          </custom>
+        </response>
+        <response sourceId="SubProcess_0paoug4" targetId="SubProcess_15wylql">
+          <custom>
+            <waypoints>
+              <waypoint x="710" y="375"/>
+              <waypoint x="775" y="375"/>
+              <waypoint x="775" y="640"/>
+              <waypoint x="840" y="640"/>
+            </waypoints>
+            <id id="Relation_0jf19zl"/>
+          </custom>
+        </response>
+        <response sourceId="Event_155iiqh" targetId="SubProcess_07zyfqo">
+          <custom>
+            <waypoints>
+              <waypoint x="990" y="195"/>
+              <waypoint x="1120" y="195"/>
+              <waypoint x="1120" y="310"/>
+              <waypoint x="1250" y="310"/>
+            </waypoints>
+            <id id="Relation_1n1vopr"/>
+          </custom>
+        </response>
+      </responses>
+      <coresponces/>
+      <excludes/>
+      <includes>
+        <include sourceId="Event_1kk6rx3" targetId="SubProcess_0y18arb">
+          <custom>
+            <waypoints>
+              <waypoint x="430" y="335"/>
+              <waypoint x="465" y="335"/>
+              <waypoint x="465" y="330"/>
+              <waypoint x="500" y="330"/>
+            </waypoints>
+            <id id="Relation_0652rum"/>
+          </custom>
+        </include>
+      </includes>
+      <milestones/>
+      <updates/>
+      <spawns/>
+    </constraints>
+  </specification>
+  <runtime>
+    <marking>
+      <globalStore/>
+      <executed/>
+      <included>
+        <event id="Event_155iiqh"/>
+        <event id="SubProcess_0paoug4"/>
+        <event id="Event_07k41iu"/>
+        <event id="Event_1w7eppn"/>
+        <event id="Event_0muqobt"/>
+        <event id="Event_02o0kdm"/>
+        <event id="Event_1kk6rx3"/>
+        <event id="SubProcess_15wylql"/>
+        <event id="Event_1ye34j5"/>
+        <event id="Event_1w4ri84"/>
+        <event id="Event_0jtcq6j"/>
+        <event id="Event_0tnj04n"/>
+        <event id="SubProcess_07zyfqo"/>
+        <event id="Event_04um3ff"/>
+        <event id="Event_0rp62gr"/>
+      </included>
+      <pendingResponses>
+        <event id="Event_07k41iu"/>
+        <event id="Event_1w7eppn"/>
+        <event id="Event_0muqobt"/>
+        <event id="Event_02o0kdm"/>
+        <event id="Event_1kk6rx3"/>
+        <event id="Event_19by3yr"/>
+        <event id="Event_007mziz"/>
+        <event id="Event_1ye34j5"/>
+        <event id="Event_1w4ri84"/>
+        <event id="Event_0jtcq6j"/>
+        <event id="Event_0tnj04n"/>
+      </pendingResponses>
+    </marking>
+  </runtime>
+</dcrgraph>

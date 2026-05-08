@@ -1,0 +1,37 @@
+{
+  "case_id": "CASE-2025-102",
+  "summary": "Forælder søger dækning af nødvendige merudgifter til barn med kronisk sygdom, men udgifterne er under minimumsgrænsen.",
+  "decision": "Kommunen afviser ansøgningen, da merudgifterne ikke overstiger minimumsgrænsen.",
+  "decision_outcome": "negativ",
+  "citations": {
+    "law": [
+      {
+        "id": "law86_2",
+        "paragraph": "§ 86",
+        "stk": [1, 3],
+        "excerpt": "Dækning af de nødvendige merudgifter kan ydes, når de skønnede merudgifter udgør mindst 5.348 kr. pr. år (2023-niveau)."
+      }
+    ],
+    "guidelines": [
+      {
+        "id": "guidelines_4",
+        "paragraph": "4",
+        "law_id_reference": "law86_2",
+        "excerpt": "Ansøgeren skal fremlægge dokumentation for merudgifter."
+      }
+    ]
+  },
+  "timeline": [
+    {"id": "evt-102-1", "label": "Is child under 18", "timestamp": "2025-02-01T08:00:00Z", "event": "Barnet er 8 år.", "law_paragraphs": ["law86_2"]},
+    {"id": "evt-102-2", "label": "Request", "timestamp": "2025-02-02T09:00:00Z", "event": "Ansøgning om dækning af merudgifter indsendt.", "law_paragraphs": ["law86_2"]},
+    {"id": "evt-102-3", "label": "Significant or permanent disability", "timestamp": "2025-02-03T10:00:00Z", "event": "Lægeerklæring dokumenterer kronisk sygdom.", "law_paragraphs": ["law86_2"]},
+    {"id": "evt-102-4", "label": "Not covered by other laws", "timestamp": "2025-02-04T11:00:00Z", "event": "Udgifterne kan ikke dækkes af andre bestemmelser.", "law_paragraphs": ["law86_2"]},
+    {"id": "evt-102-5", "label": "Consequence of disability", "timestamp": "2025-02-05T12:00:00Z", "event": "Merudgifterne er en konsekvens af barnets sygdom.", "law_paragraphs": ["law86_2"]},
+    {"id": "evt-102-6", "label": "Add expenses", "timestamp": "2025-02-06T13:00:00Z", "event": "Forælder opgør og dokumenterer merudgifter.", "law_paragraphs": ["law86_2"]},
+    {"id": "evt-102-7", "label": "Expense", "timestamp": "2025-02-07T14:00:00Z", "event": "Udgifter til medicin og transport indsendt.", "law_paragraphs": ["law86_2"]},
+    {"id": "evt-102-8", "label": "Amount", "timestamp": "2025-02-08T15:00:00Z", "event": "Samlede merudgifter er under minimumsgrænsen.", "law_paragraphs": ["law86_2"]},
+    {"id": "evt-102-9", "label": "Description", "timestamp": "2025-02-09T16:00:00Z", "event": "Detaljeret beskrivelse af udgifter fremlagt.", "law_paragraphs": ["law86_2"]},
+    {"id": "evt-102-10", "label": "Law facts", "timestamp": "2025-02-10T17:00:00Z", "event": "Kommunen vurderer sagen ud fra § 86.", "law_paragraphs": ["law86_2"]},
+    {"id": "evt-102-11", "label": "Do not cover", "timestamp": "2025-02-11T18:00:00Z", "event": "Afgørelse: Dækning af nødvendige merudgifter afvises.", "law_paragraphs": ["law86_2"]}
+  ]
+}
